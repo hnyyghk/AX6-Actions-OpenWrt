@@ -84,9 +84,6 @@ fun() {
 
     sleep 30
 
-    uci del firewall.cfg03dc81.network
-    uci add_list firewall.cfg03dc81.network='wan'
-    uci add_list firewall.cfg03dc81.network='wan6'
     uci add_list firewall.cfg03dc81.network='modem'
     uci commit firewall
     /etc/init.d/firewall restart >> /etc/custom.tag
@@ -190,6 +187,14 @@ EOF
     /etc/init.d/ddns restart >> /etc/custom.tag
     echo "ddns finish" >> /etc/custom.tag
 
+    echo "dns.google" >> /etc/ssrplus/black.list
+    echo "doh.opendns.com" >> /etc/ssrplus/black.list
+    uci add_list shadowsocksr.cfg034417.wan_fw_ips='1.1.1.1'
+    uci add_list shadowsocksr.cfg034417.wan_fw_ips='1.0.0.1'
+    uci add_list shadowsocksr.cfg034417.wan_fw_ips='8.8.8.8'
+    uci add_list shadowsocksr.cfg034417.wan_fw_ips='8.8.4.4'
+    uci add_list shadowsocksr.cfg034417.wan_fw_ips='208.67.222.222'
+    uci add_list shadowsocksr.cfg034417.wan_fw_ips='208.67.220.220'
     uci add_list shadowsocksr.cfg029e1d.subscribe_url="\${SSR_SUBSCRIBE_URL}"
     uci set shadowsocksr.cfg029e1d.save_words="\${SSR_SAVE_WORDS}"
     uci set shadowsocksr.cfg029e1d.switch='1'
