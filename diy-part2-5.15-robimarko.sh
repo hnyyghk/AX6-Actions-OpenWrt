@@ -70,6 +70,8 @@ fun() {
     uci set network.wan.username="\${PPPOE_USERNAME}"
     uci set network.wan.password="\${PPPOE_PASSWORD}"
     uci set network.wan.ipv6='auto'
+    uci set network.wan.peerdns='0'
+    uci add_list network.wan.dns='127.0.0.1'
     uci set network.modem=interface
     uci set network.modem.proto='dhcp'
     uci set network.modem.device='eth0'
