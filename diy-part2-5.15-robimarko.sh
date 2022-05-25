@@ -106,20 +106,22 @@ fun() {
 
     uci set smartdns.cfg016bb1.enabled='1'
     uci set smartdns.cfg016bb1.server_name='smartdns'
-    uci set smartdns.cfg016bb1.port='5335'
+    uci set smartdns.cfg016bb1.port='6053'
     uci set smartdns.cfg016bb1.tcp_server='0'
     uci set smartdns.cfg016bb1.ipv6_server='0'
     uci set smartdns.cfg016bb1.dualstack_ip_selection='1'
     uci set smartdns.cfg016bb1.prefetch_domain='1'
     uci set smartdns.cfg016bb1.serve_expired='1'
     uci set smartdns.cfg016bb1.redirect='dnsmasq-upstream'
-    uci set smartdns.cfg016bb1.cache_size='8192'
+    uci set smartdns.cfg016bb1.cache_size='16384'
     uci set smartdns.cfg016bb1.rr_ttl='30'
     uci set smartdns.cfg016bb1.rr_ttl_min='30'
     uci set smartdns.cfg016bb1.rr_ttl_max='300'
-    uci set smartdns.cfg016bb1.seconddns_port='6553'
+    uci set smartdns.cfg016bb1.seconddns_enabled='1'
+    uci set smartdns.cfg016bb1.seconddns_port='5335'
     uci set smartdns.cfg016bb1.seconddns_tcp_server='0'
-    uci set smartdns.cfg016bb1.seconddns_no_speed_check='0'
+    uci set smartdns.cfg016bb1.seconddns_server_group='oversea'
+    uci set smartdns.cfg016bb1.seconddns_no_speed_check='1'
     uci set smartdns.cfg016bb1.seconddns_no_rule_addr='0'
     uci set smartdns.cfg016bb1.seconddns_no_rule_nameserver='0'
     uci set smartdns.cfg016bb1.seconddns_no_rule_ipset='0'
@@ -145,23 +147,24 @@ conf-file /etc/smartdns/ad.conf
 # remote dns server list
 server 114.114.114.114 #114DNS
 server 114.114.115.115 #114DNS
-server-tls 1.1.1.1 #CloudflareDNS
-server-tls 1.0.0.1 #CloudflareDNS
 server 119.29.29.29 #TencentDNS
 server 182.254.116.116 #TencentDNS
 server 2402:4e00:: #TencentDNS
-server-tls 8.8.8.8 #GoogleDNS
-server-tls 8.8.4.4 #GoogleDNS
-server-https https://dns.google/dns-query #GoogleDNS
 server 223.5.5.5 #AlibabaDNS
 server 223.6.6.6 #AlibabaDNS
 server 2400:3200::1 #AlibabaDNS
 server 2400:3200:baba::1 #AlibabaDNS
-server-tls 208.67.222.222 #OpenDNS
-server-tls 208.67.220.220 #OpenDNS
-server-https https://doh.opendns.com/dns-query #OpenDNS
 server 180.76.76.76 #BaiduDNS
 server 2400:da00::6666 #BaiduDNS
+server-tls 1.1.1.1 -group oversea -exclude-default-group #CloudflareDNS
+server-tls 1.0.0.1 -group oversea -exclude-default-group #CloudflareDNS
+server-https https://dns.cloudflare.com/dns-query -group oversea -exclude-default-group #CloudflareDNS
+server-tls 8.8.8.8 -group oversea -exclude-default-group #GoogleDNS
+server-tls 8.8.4.4 -group oversea -exclude-default-group #GoogleDNS
+server-https https://dns.google/dns-query -group oversea -exclude-default-group #GoogleDNS
+server-tls 208.67.222.222 -group oversea -exclude-default-group #OpenDNS
+server-tls 208.67.220.220 -group oversea -exclude-default-group #OpenDNS
+server-https https://doh.opendns.com/dns-query -group oversea -exclude-default-group #OpenDNS
 EOF
     /etc/init.d/smartdns restart >> /etc/custom.tag
     echo "smartdns remote dns server list finish" >> /etc/custom.tag
@@ -187,6 +190,7 @@ EOF
     /etc/init.d/ddns restart >> /etc/custom.tag
     echo "ddns finish" >> /etc/custom.tag
 
+    echo "dns.cloudflare.com" >> /etc/ssrplus/black.list
     echo "dns.google" >> /etc/ssrplus/black.list
     echo "doh.opendns.com" >> /etc/ssrplus/black.list
     uci add_list shadowsocksr.cfg034417.wan_fw_ips='1.1.1.1'
@@ -201,7 +205,7 @@ EOF
     uci set shadowsocksr.cfg029e1d.auto_update_time='4'
     uci commit shadowsocksr
     /usr/bin/lua /usr/share/shadowsocksr/subscribe.lua >> /etc/custom.tag
-    uci set shadowsocksr.cfg013fd6.global_server='cfg104a8f'
+    uci set shadowsocksr.cfg013fd6.global_server='cfg0f4a8f'
     uci set shadowsocksr.cfg013fd6.pdnsd_enable='0'
     uci del shadowsocksr.cfg013fd6.tunnel_forward
     uci commit shadowsocksr
