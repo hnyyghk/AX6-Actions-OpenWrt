@@ -31,6 +31,8 @@ ls -a ../openwrt-temp
 mv ../openwrt-temp/* ../openwrt-temp/.[^.]* ./
 echo "openwrt: after mv ../openwrt-temp/* ../openwrt-temp/.[^.]* ./"
 ls -a
+echo "openwrt-temp: after mv ../openwrt-temp/* ../openwrt-temp/.[^.]* ./"
+ls -a ../openwrt-temp
 git add -A
 git commit -m "temp"
 git pull --rebase
@@ -56,6 +58,10 @@ for i in "luci.mk"; do \
 done
 
 mkdir custom-feed/applications
+
+for i in "ipv6-helper"; do \
+  svn checkout "https://github.com/coolsnowwolf/lede/trunk/package/lean/$i" "custom-feed/applications/$i"; \
+done
 
 for i in "luci-app-vlmcsd"; do \
   svn checkout "https://github.com/coolsnowwolf/luci/trunk/applications/$i" "custom-feed/applications/$i"; \
