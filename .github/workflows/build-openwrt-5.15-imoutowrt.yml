@@ -63,13 +63,6 @@ jobs:
         ln -sf /workdir/openwrt $GITHUB_WORKSPACE/openwrt
         [ -e $GITHUB_WORKSPACE/$CONFIG_FILE ] && echo "TARGET_DEVICE=$(grep '^CONFIG_TARGET.*DEVICE.*=y' $GITHUB_WORKSPACE/$CONFIG_FILE | sed -r 's/.*DEVICE_(.*)=y/\1/')" >> $GITHUB_ENV
 
-    - name: Cache
-      uses: klever1988/cachewrtbuild@test
-      with:
-        ccache: 'true'
-        prefix: ${{ github.workspace }}/openwrt
-        mixkey: ${{ env.REPO_URL }}/tree/${{ env.REPO_BRANCH }}?device=${{ env.TARGET_DEVICE }}
-
     - name: Load custom feeds
       run: |
         [ -e $FEEDS_CONF ] && mv $FEEDS_CONF openwrt/feeds.conf.default
@@ -77,6 +70,13 @@ jobs:
         cd openwrt
         echo "COMMIT_HASH=$(git rev-parse HEAD)" >> $GITHUB_ENV
         $GITHUB_WORKSPACE/$DIY_P1_SH
+
+    - name: Cache
+      uses: klever1988/cachewrtbuild@test
+      with:
+        ccache: 'true'
+        prefix: ${{ github.workspace }}/openwrt
+        mixkey: ${{ env.REPO_URL }}/tree/${{ env.REPO_BRANCH }}?device=${{ env.TARGET_DEVICE }}
 
     - name: Update feeds
       run: cd openwrt && ./scripts/feeds update -a
