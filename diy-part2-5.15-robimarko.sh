@@ -61,8 +61,11 @@ fun() {
     PPPOE_PASSWORD=""
     DDNS_USERNAME=""
     DDNS_PASSWORD=""
-    SSR_SUBSCRIBE_URL=""
+    SSR_SUBSCRIBE_URL1=""
+    SSR_SUBSCRIBE_URL2=""
+    SSR_FILTER_WORDS=""
     SSR_SAVE_WORDS=""
+    SSR_GLOBAL_SERVER=""
 
     sleep 30
 
@@ -199,13 +202,16 @@ EOF
     uci add_list shadowsocksr.cfg034417.wan_fw_ips='8.8.4.4'
     uci add_list shadowsocksr.cfg034417.wan_fw_ips='208.67.222.222'
     uci add_list shadowsocksr.cfg034417.wan_fw_ips='208.67.220.220'
-    uci add_list shadowsocksr.cfg029e1d.subscribe_url="\${SSR_SUBSCRIBE_URL}"
+    uci set shadowsocksr.cfg029e1d.auto_update='1'
+    uci set shadowsocksr.cfg029e1d.auto_update_time='4'
+    uci add_list shadowsocksr.cfg029e1d.subscribe_url="\${SSR_SUBSCRIBE_URL1}"
+    uci add_list shadowsocksr.cfg029e1d.subscribe_url="\${SSR_SUBSCRIBE_URL2}"
+    uci set shadowsocksr.cfg029e1d.filter_words="\${SSR_FILTER_WORDS}"
     uci set shadowsocksr.cfg029e1d.save_words="\${SSR_SAVE_WORDS}"
     uci set shadowsocksr.cfg029e1d.switch='1'
-    uci set shadowsocksr.cfg029e1d.auto_update_time='4'
     uci commit shadowsocksr
     /usr/bin/lua /usr/share/shadowsocksr/subscribe.lua >> /etc/custom.tag
-    uci set shadowsocksr.cfg013fd6.global_server='cfg0f4a8f'
+    uci set shadowsocksr.cfg013fd6.global_server="\${SSR_GLOBAL_SERVER}"
     uci set shadowsocksr.cfg013fd6.pdnsd_enable='0'
     uci del shadowsocksr.cfg013fd6.tunnel_forward
     uci commit shadowsocksr
