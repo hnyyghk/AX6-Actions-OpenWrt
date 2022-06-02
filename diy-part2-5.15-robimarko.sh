@@ -56,19 +56,17 @@ sed -i "s/radio\${devidx}.encryption=none/radio\${devidx}.encryption=psk-mixed\n
 touch package/base-files/files/etc/custom.tag
 sed -i '/exit 0/d' package/base-files/files/etc/rc.local
 cat >> package/base-files/files/etc/rc.local << EOFEOF
-fun1() {
-    # 把局域网内所有客户端对外ipv4的53端口查询请求，都劫持指向路由器(iptables -n -t nat -L PREROUTING)
-    iptables -t nat -A PREROUTING -p udp --dport 53 -j REDIRECT --to-ports 53
-    iptables -t nat -A PREROUTING -p tcp --dport 53 -j REDIRECT --to-ports 53
+PPPOE_USERNAME=""
+PPPOE_PASSWORD=""
+DDNS_USERNAME=""
+DDNS_PASSWORD=""
+SSR_SUBSCRIBE_URL1=""
+SSR_SUBSCRIBE_URL2=""
+SSR_FILTER_WORDS=""
+SSR_SAVE_WORDS=""
+SSR_GLOBAL_SERVER=""
 
-    # 把局域网内所有客户端对外ipv6的53端口查询请求，都劫持指向路由器(ip6tables -n -t nat -L PREROUTING)
-#    [ -n "$(command -v ip6tables)" ] && ip6tables -t nat -A PREROUTING -p udp --dport 53 -j REDIRECT --to-ports 53
-#    [ -n "$(command -v ip6tables)" ] && ip6tables -t nat -A PREROUTING -p tcp --dport 53 -j REDIRECT --to-ports 53
-
-    # 把局域网内所有客户端对外ipv4和ipv6的53端口查询请求，都劫持指向路由器(nft list chain inet fw4 dstnat)
-#    nft add rule inet fw4 dstnat udp dport 53 redirect to :53
-#    nft add rule inet fw4 dstnat tcp dport 53 redirect to :53
-
+refresh_ad_conf() {
     sleep 30
 
     wget -c -P /etc/smartdns https://raw.githubusercontent.com/privacy-protection-tools/anti-AD/master/anti-ad-smartdns.conf 2>> /etc/custom.tag
@@ -173,56 +171,8 @@ EOF
     echo "smartdns block ad domain list finish" >> /etc/custom.tag
 }
 
-fun() {
-    PPPOE_USERNAME=""
-    PPPOE_PASSWORD=""
-    DDNS_USERNAME=""
-    DDNS_PASSWORD=""
-    SSR_SUBSCRIBE_URL1=""
-    SSR_SUBSCRIBE_URL2=""
-    SSR_FILTER_WORDS=""
-    SSR_SAVE_WORDS=""
-    SSR_GLOBAL_SERVER=""
-
+init_custom_config() {
     sleep 30
-
-    uci set network.wan.proto='pppoe'
-    uci set network.wan.username="\${PPPOE_USERNAME}"
-    uci set network.wan.password="\${PPPOE_PASSWORD}"
-    uci set network.wan.ipv6='auto'
-    uci set network.wan.peerdns='0'
-    uci add_list network.wan.dns='127.0.0.1'
-    uci set network.modem=interface
-    uci set network.modem.proto='dhcp'
-    uci set network.modem.device='eth0'
-    uci set network.modem.defaultroute='0'
-    uci set network.modem.peerdns='0'
-    uci set network.modem.delegate='0'
-    uci commit network
-    /etc/init.d/network restart >> /etc/custom.tag
-    echo "network finish" >> /etc/custom.tag
-
-    sleep 30
-
-    uci add_list firewall.cfg03dc81.network='modem'
-    uci commit firewall
-    /etc/init.d/firewall restart >> /etc/custom.tag
-    echo "firewall finish" >> /etc/custom.tag
-
-    uci set ttyd.cfg01a8ea.ssl='1'
-    uci set ttyd.cfg01a8ea.ssl_cert='/etc/nginx/conf.d/_lan.crt'
-    uci set ttyd.cfg01a8ea.ssl_key='/etc/nginx/conf.d/_lan.key'
-    uci commit ttyd
-    /etc/init.d/ttyd restart >> /etc/custom.tag
-    echo "ttyd finish" >> /etc/custom.tag
-
-    uci set autoreboot.cfg01f8be.enable='1'
-    uci set autoreboot.cfg01f8be.week='7'
-    uci set autoreboot.cfg01f8be.hour='3'
-    uci set autoreboot.cfg01f8be.minute='30'
-    uci commit autoreboot
-    /etc/init.d/autoreboot restart >> /etc/custom.tag
-    echo "autoreboot finish" >> /etc/custom.tag
 
     uci set dhcp.cfg01411c.port='6053'
     uci commit dhcp
@@ -294,7 +244,43 @@ EOF
     /etc/init.d/smartdns restart >> /etc/custom.tag
     echo "smartdns remote dns server list finish" >> /etc/custom.tag
 
+    uci set network.wan.proto='pppoe'
+    uci set network.wan.username="\${PPPOE_USERNAME}"
+    uci set network.wan.password="\${PPPOE_PASSWORD}"
+    uci set network.wan.ipv6='auto'
+    uci set network.wan.peerdns='0'
+    uci add_list network.wan.dns='127.0.0.1'
+    uci set network.modem=interface
+    uci set network.modem.proto='dhcp'
+    uci set network.modem.device='eth0'
+    uci set network.modem.defaultroute='0'
+    uci set network.modem.peerdns='0'
+    uci set network.modem.delegate='0'
+    uci commit network
+    /etc/init.d/network restart >> /etc/custom.tag
+    echo "network finish" >> /etc/custom.tag
+
     sleep 30
+
+    uci add_list firewall.cfg03dc81.network='modem'
+    uci commit firewall
+    /etc/init.d/firewall restart >> /etc/custom.tag
+    echo "firewall finish" >> /etc/custom.tag
+
+    uci set ttyd.cfg01a8ea.ssl='1'
+    uci set ttyd.cfg01a8ea.ssl_cert='/etc/nginx/conf.d/_lan.crt'
+    uci set ttyd.cfg01a8ea.ssl_key='/etc/nginx/conf.d/_lan.key'
+    uci commit ttyd
+    /etc/init.d/ttyd restart >> /etc/custom.tag
+    echo "ttyd finish" >> /etc/custom.tag
+
+    uci set autoreboot.cfg01f8be.enable='1'
+    uci set autoreboot.cfg01f8be.week='7'
+    uci set autoreboot.cfg01f8be.hour='3'
+    uci set autoreboot.cfg01f8be.minute='30'
+    uci commit autoreboot
+    /etc/init.d/autoreboot restart >> /etc/custom.tag
+    echo "autoreboot finish" >> /etc/custom.tag
 
     uci set ddns.test=service
     uci set ddns.test.service_name='cloudflare.com-v4'
@@ -340,17 +326,29 @@ EOF
     /etc/init.d/shadowsocksr restart >> /etc/custom.tag
     echo "shadowsocksr finish" >> /etc/custom.tag
 
-    fun1
+    refresh_ad_conf
 }
+
+# 把局域网内所有客户端对外ipv4的53端口查询请求，都劫持指向路由器(iptables -n -t nat -L PREROUTING)
+iptables -t nat -A PREROUTING -p udp --dport 53 -j REDIRECT --to-ports 53
+iptables -t nat -A PREROUTING -p tcp --dport 53 -j REDIRECT --to-ports 53
+# 把局域网内所有客户端对外ipv6的53端口查询请求，都劫持指向路由器(ip6tables -n -t nat -L PREROUTING)
+#[ -n "$(command -v ip6tables)" ] && ip6tables -t nat -A PREROUTING -p udp --dport 53 -j REDIRECT --to-ports 53
+#[ -n "$(command -v ip6tables)" ] && ip6tables -t nat -A PREROUTING -p tcp --dport 53 -j REDIRECT --to-ports 53
+# 把局域网内所有客户端对外ipv4和ipv6的53端口查询请求，都劫持指向路由器(nft list chain inet fw4 dstnat)
+#nft add rule inet fw4 dstnat udp dport 53 redirect to :53
+#nft add rule inet fw4 dstnat tcp dport 53 redirect to :53
 
 if [ -f "/etc/custom.tag" ];then
     echo "smartdns block ad domain list start" > /etc/custom.tag
-    fun1 &
+    refresh_ad_conf &
 else
-    touch /etc/custom.tag
-    fun &
+    echo "init custom config start" > /etc/custom.tag
+    init_custom_config &
 fi
+
 echo "rc.local finish" >> /etc/custom.tag
+
 exit 0
 EOFEOF
 
