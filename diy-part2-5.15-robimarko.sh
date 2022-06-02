@@ -56,167 +56,18 @@ sed -i "s/radio\${devidx}.encryption=none/radio\${devidx}.encryption=psk-mixed\n
 touch package/base-files/files/etc/custom.tag
 sed -i '/exit 0/d' package/base-files/files/etc/rc.local
 cat >> package/base-files/files/etc/rc.local << EOFEOF
-fun() {
-    PPPOE_USERNAME=""
-    PPPOE_PASSWORD=""
-    DDNS_USERNAME=""
-    DDNS_PASSWORD=""
-    SSR_SUBSCRIBE_URL1=""
-    SSR_SUBSCRIBE_URL2=""
-    SSR_FILTER_WORDS=""
-    SSR_SAVE_WORDS=""
-    SSR_GLOBAL_SERVER=""
+fun1() {
+    # 把局域网内所有客户端对外ipv4的53端口查询请求，都劫持指向路由器(iptables -n -t nat -L PREROUTING)
+    iptables -t nat -A PREROUTING -p udp --dport 53 -j REDIRECT --to-ports 53
+    iptables -t nat -A PREROUTING -p tcp --dport 53 -j REDIRECT --to-ports 53
 
-    sleep 30
+    # 把局域网内所有客户端对外ipv6的53端口查询请求，都劫持指向路由器(ip6tables -n -t nat -L PREROUTING)
+#    [ -n "$(command -v ip6tables)" ] && ip6tables -t nat -A PREROUTING -p udp --dport 53 -j REDIRECT --to-ports 53
+#    [ -n "$(command -v ip6tables)" ] && ip6tables -t nat -A PREROUTING -p tcp --dport 53 -j REDIRECT --to-ports 53
 
-    uci set network.wan.proto='pppoe'
-    uci set network.wan.username="\${PPPOE_USERNAME}"
-    uci set network.wan.password="\${PPPOE_PASSWORD}"
-    uci set network.wan.ipv6='auto'
-    uci set network.wan.peerdns='0'
-    uci add_list network.wan.dns='127.0.0.1'
-    uci set network.modem=interface
-    uci set network.modem.proto='dhcp'
-    uci set network.modem.device='eth0'
-    uci set network.modem.defaultroute='0'
-    uci set network.modem.peerdns='0'
-    uci set network.modem.delegate='0'
-    uci commit network
-    /etc/init.d/network restart >> /etc/custom.tag
-    echo "network finish" >> /etc/custom.tag
-
-    sleep 30
-
-    uci add_list firewall.cfg03dc81.network='modem'
-    uci commit firewall
-    /etc/init.d/firewall restart >> /etc/custom.tag
-    echo "firewall finish" >> /etc/custom.tag
-
-    uci set ttyd.cfg01a8ea.ssl='1'
-    uci set ttyd.cfg01a8ea.ssl_cert='/etc/nginx/conf.d/_lan.crt'
-    uci set ttyd.cfg01a8ea.ssl_key='/etc/nginx/conf.d/_lan.key'
-    uci commit ttyd
-    /etc/init.d/ttyd restart >> /etc/custom.tag
-    echo "ttyd finish" >> /etc/custom.tag
-
-    uci set autoreboot.cfg01f8be.enable='1'
-    uci set autoreboot.cfg01f8be.week='7'
-    uci set autoreboot.cfg01f8be.hour='3'
-    uci set autoreboot.cfg01f8be.minute='30'
-    uci commit autoreboot
-    /etc/init.d/autoreboot restart >> /etc/custom.tag
-    echo "autoreboot finish" >> /etc/custom.tag
-
-    uci set smartdns.cfg016bb1.enabled='1'
-    uci set smartdns.cfg016bb1.server_name='smartdns'
-    uci set smartdns.cfg016bb1.port='6053'
-    uci set smartdns.cfg016bb1.tcp_server='0'
-    uci set smartdns.cfg016bb1.ipv6_server='0'
-    uci set smartdns.cfg016bb1.dualstack_ip_selection='1'
-    uci set smartdns.cfg016bb1.prefetch_domain='1'
-    uci set smartdns.cfg016bb1.serve_expired='1'
-    uci set smartdns.cfg016bb1.redirect='dnsmasq-upstream'
-    uci set smartdns.cfg016bb1.cache_size='16384'
-    uci set smartdns.cfg016bb1.rr_ttl='30'
-    uci set smartdns.cfg016bb1.rr_ttl_min='30'
-    uci set smartdns.cfg016bb1.rr_ttl_max='300'
-    uci set smartdns.cfg016bb1.seconddns_enabled='1'
-    uci set smartdns.cfg016bb1.seconddns_port='5335'
-    uci set smartdns.cfg016bb1.seconddns_tcp_server='0'
-    uci set smartdns.cfg016bb1.seconddns_server_group='oversea'
-    uci set smartdns.cfg016bb1.seconddns_no_speed_check='1'
-    uci set smartdns.cfg016bb1.seconddns_no_rule_addr='0'
-    uci set smartdns.cfg016bb1.seconddns_no_rule_nameserver='0'
-    uci set smartdns.cfg016bb1.seconddns_no_rule_ipset='0'
-    uci set smartdns.cfg016bb1.seconddns_no_rule_soa='0'
-    uci set smartdns.cfg016bb1.seconddns_no_dualstack_selection='0'
-    uci set smartdns.cfg016bb1.seconddns_no_cache='0'
-    uci set smartdns.cfg016bb1.force_aaaa_soa='0'
-    uci set smartdns.cfg016bb1.coredump='0'
-    uci del smartdns.cfg016bb1.old_redirect
-    uci add_list smartdns.cfg016bb1.old_redirect='redirect'
-    uci del smartdns.cfg016bb1.old_port
-    uci add_list smartdns.cfg016bb1.old_port='5335'
-    uci del smartdns.cfg016bb1.old_enabled
-    uci add_list smartdns.cfg016bb1.old_enabled='1'
-    uci commit smartdns
-    touch /etc/smartdns/ad.conf
-    cat >> /etc/smartdns/custom.conf << EOF
-
-
-# Include another configuration options
-conf-file /etc/smartdns/ad.conf
-
-# remote dns server list
-server 114.114.114.114 #114DNS
-server 114.114.115.115 #114DNS
-server 119.29.29.29 #TencentDNS
-server 182.254.116.116 #TencentDNS
-server 2402:4e00:: #TencentDNS
-server 223.5.5.5 #AlibabaDNS
-server 223.6.6.6 #AlibabaDNS
-server 2400:3200::1 #AlibabaDNS
-server 2400:3200:baba::1 #AlibabaDNS
-server 180.76.76.76 #BaiduDNS
-server 2400:da00::6666 #BaiduDNS
-server-tls 1.1.1.1 -group oversea -exclude-default-group #CloudflareDNS
-server-tls 1.0.0.1 -group oversea -exclude-default-group #CloudflareDNS
-server-https https://dns.cloudflare.com/dns-query -group oversea -exclude-default-group #CloudflareDNS
-server-tls 8.8.8.8 -group oversea -exclude-default-group #GoogleDNS
-server-tls 8.8.4.4 -group oversea -exclude-default-group #GoogleDNS
-server-https https://dns.google/dns-query -group oversea -exclude-default-group #GoogleDNS
-server-tls 208.67.222.222 -group oversea -exclude-default-group #OpenDNS
-server-tls 208.67.220.220 -group oversea -exclude-default-group #OpenDNS
-server-https https://doh.opendns.com/dns-query -group oversea -exclude-default-group #OpenDNS
-EOF
-    /etc/init.d/smartdns restart >> /etc/custom.tag
-    echo "smartdns remote dns server list finish" >> /etc/custom.tag
-
-    sleep 30
-
-    uci set ddns.test=service
-    uci set ddns.test.service_name='cloudflare.com-v4'
-    uci set ddns.test.use_ipv6='1'
-    uci set ddns.test.enabled='1'
-    uci set ddns.test.lookup_host='test.5icodes.com'
-    uci set ddns.test.domain='test@5icodes.com'
-    uci set ddns.test.username="\${DDNS_USERNAME}"
-    uci set ddns.test.password="\${DDNS_PASSWORD}"
-    uci set ddns.test.ip_source='network'
-    uci set ddns.test.ip_network='wan_6'
-    uci set ddns.test.interface='wan_6'
-    uci set ddns.test.use_syslog='2'
-    uci set ddns.test.check_unit='minutes'
-    uci set ddns.test.force_unit='minutes'
-    uci set ddns.test.retry_unit='seconds'
-    uci commit ddns
-    /etc/init.d/ddns restart >> /etc/custom.tag
-    echo "ddns finish" >> /etc/custom.tag
-
-    echo "dns.cloudflare.com" >> /etc/ssrplus/black.list
-    echo "dns.google" >> /etc/ssrplus/black.list
-    echo "doh.opendns.com" >> /etc/ssrplus/black.list
-    uci add_list shadowsocksr.cfg034417.wan_fw_ips='1.1.1.1'
-    uci add_list shadowsocksr.cfg034417.wan_fw_ips='1.0.0.1'
-    uci add_list shadowsocksr.cfg034417.wan_fw_ips='8.8.8.8'
-    uci add_list shadowsocksr.cfg034417.wan_fw_ips='8.8.4.4'
-    uci add_list shadowsocksr.cfg034417.wan_fw_ips='208.67.222.222'
-    uci add_list shadowsocksr.cfg034417.wan_fw_ips='208.67.220.220'
-    uci set shadowsocksr.cfg029e1d.auto_update='1'
-    uci set shadowsocksr.cfg029e1d.auto_update_time='4'
-    uci add_list shadowsocksr.cfg029e1d.subscribe_url="\${SSR_SUBSCRIBE_URL1}"
-    uci add_list shadowsocksr.cfg029e1d.subscribe_url="\${SSR_SUBSCRIBE_URL2}"
-    uci set shadowsocksr.cfg029e1d.filter_words="\${SSR_FILTER_WORDS}"
-    uci set shadowsocksr.cfg029e1d.save_words="\${SSR_SAVE_WORDS}"
-    uci set shadowsocksr.cfg029e1d.switch='1'
-    uci commit shadowsocksr
-    /usr/bin/lua /usr/share/shadowsocksr/subscribe.lua >> /etc/custom.tag
-    uci set shadowsocksr.cfg013fd6.global_server="\${SSR_GLOBAL_SERVER}"
-    uci set shadowsocksr.cfg013fd6.pdnsd_enable='0'
-    uci del shadowsocksr.cfg013fd6.tunnel_forward
-    uci commit shadowsocksr
-    /etc/init.d/shadowsocksr restart >> /etc/custom.tag
-    echo "shadowsocksr finish" >> /etc/custom.tag
+    # 把局域网内所有客户端对外ipv4和ipv6的53端口查询请求，都劫持指向路由器(nft list chain inet fw4 dstnat)
+#    nft add rule inet fw4 dstnat udp dport 53 redirect to :53
+#    nft add rule inet fw4 dstnat tcp dport 53 redirect to :53
 
     sleep 30
 
@@ -315,30 +166,191 @@ address /f3.market.mi-img.com/#
 address /f2.market.mi-img.com/#
 address /f1.market.mi-img.com/#
 EOF
-    sort -u /etc/smartdns/aaa.conf > /etc/smartdns/bbb.conf
-    echo "# block ad domain list" >> /etc/smartdns/ad.conf
-    cat /etc/smartdns/bbb.conf >> /etc/smartdns/ad.conf
+    echo "# block ad domain list" > /etc/smartdns/ad.conf
+    sort -u /etc/smartdns/aaa.conf >> /etc/smartdns/ad.conf
     rm -f /etc/smartdns/aaa.conf
-    rm -f /etc/smartdns/bbb.conf
     /etc/init.d/smartdns restart >> /etc/custom.tag
     echo "smartdns block ad domain list finish" >> /etc/custom.tag
 }
 
-# 把局域网内所有客户端对外ipv4的53端口查询请求，都劫持指向路由器(iptables -n -t nat -L PREROUTING)
-iptables -t nat -A PREROUTING -p udp --dport 53 -j REDIRECT --to-ports 53
-iptables -t nat -A PREROUTING -p tcp --dport 53 -j REDIRECT --to-ports 53
-# 把局域网内所有客户端对外ipv6的53端口查询请求，都劫持指向路由器(ip6tables -n -t nat -L PREROUTING)
-[ -n "$(command -v ip6tables)" ] && ip6tables -t nat -A PREROUTING -p udp --dport 53 -j REDIRECT --to-ports 53
-[ -n "$(command -v ip6tables)" ] && ip6tables -t nat -A PREROUTING -p tcp --dport 53 -j REDIRECT --to-ports 53
+fun() {
+    PPPOE_USERNAME=""
+    PPPOE_PASSWORD=""
+    DDNS_USERNAME=""
+    DDNS_PASSWORD=""
+    SSR_SUBSCRIBE_URL1=""
+    SSR_SUBSCRIBE_URL2=""
+    SSR_FILTER_WORDS=""
+    SSR_SAVE_WORDS=""
+    SSR_GLOBAL_SERVER=""
+
+    sleep 30
+
+    uci set network.wan.proto='pppoe'
+    uci set network.wan.username="\${PPPOE_USERNAME}"
+    uci set network.wan.password="\${PPPOE_PASSWORD}"
+    uci set network.wan.ipv6='auto'
+    uci set network.wan.peerdns='0'
+    uci add_list network.wan.dns='127.0.0.1'
+    uci set network.modem=interface
+    uci set network.modem.proto='dhcp'
+    uci set network.modem.device='eth0'
+    uci set network.modem.defaultroute='0'
+    uci set network.modem.peerdns='0'
+    uci set network.modem.delegate='0'
+    uci commit network
+    /etc/init.d/network restart >> /etc/custom.tag
+    echo "network finish" >> /etc/custom.tag
+
+    sleep 30
+
+    uci add_list firewall.cfg03dc81.network='modem'
+    uci commit firewall
+    /etc/init.d/firewall restart >> /etc/custom.tag
+    echo "firewall finish" >> /etc/custom.tag
+
+    uci set ttyd.cfg01a8ea.ssl='1'
+    uci set ttyd.cfg01a8ea.ssl_cert='/etc/nginx/conf.d/_lan.crt'
+    uci set ttyd.cfg01a8ea.ssl_key='/etc/nginx/conf.d/_lan.key'
+    uci commit ttyd
+    /etc/init.d/ttyd restart >> /etc/custom.tag
+    echo "ttyd finish" >> /etc/custom.tag
+
+    uci set autoreboot.cfg01f8be.enable='1'
+    uci set autoreboot.cfg01f8be.week='7'
+    uci set autoreboot.cfg01f8be.hour='3'
+    uci set autoreboot.cfg01f8be.minute='30'
+    uci commit autoreboot
+    /etc/init.d/autoreboot restart >> /etc/custom.tag
+    echo "autoreboot finish" >> /etc/custom.tag
+
+    uci set dhcp.cfg01411c.port='6053'
+    uci commit dhcp
+    /etc/init.d/dnsmasq restart >> /etc/custom.tag
+    echo "dnsmasq finish" >> /etc/custom.tag
+
+    uci set smartdns.cfg016bb1.enabled='1'
+    uci set smartdns.cfg016bb1.server_name='smartdns'
+    uci set smartdns.cfg016bb1.port='53'
+    uci set smartdns.cfg016bb1.tcp_server='0'
+    uci set smartdns.cfg016bb1.ipv6_server='0'
+    uci set smartdns.cfg016bb1.dualstack_ip_selection='1'
+    uci set smartdns.cfg016bb1.prefetch_domain='1'
+    uci set smartdns.cfg016bb1.serve_expired='1'
+    uci set smartdns.cfg016bb1.redirect='none'
+    uci set smartdns.cfg016bb1.cache_size='16384'
+    uci set smartdns.cfg016bb1.rr_ttl='30'
+    uci set smartdns.cfg016bb1.rr_ttl_min='30'
+    uci set smartdns.cfg016bb1.rr_ttl_max='300'
+    uci set smartdns.cfg016bb1.seconddns_enabled='1'
+    uci set smartdns.cfg016bb1.seconddns_port='5335'
+    uci set smartdns.cfg016bb1.seconddns_tcp_server='0'
+    uci set smartdns.cfg016bb1.seconddns_server_group='oversea'
+    uci set smartdns.cfg016bb1.seconddns_no_speed_check='1'
+    uci set smartdns.cfg016bb1.seconddns_no_rule_addr='0'
+    uci set smartdns.cfg016bb1.seconddns_no_rule_nameserver='0'
+    uci set smartdns.cfg016bb1.seconddns_no_rule_ipset='0'
+    uci set smartdns.cfg016bb1.seconddns_no_rule_soa='0'
+    uci set smartdns.cfg016bb1.seconddns_no_dualstack_selection='0'
+    uci set smartdns.cfg016bb1.seconddns_no_cache='0'
+    uci set smartdns.cfg016bb1.force_aaaa_soa='0'
+    uci set smartdns.cfg016bb1.coredump='0'
+    uci del smartdns.cfg016bb1.old_redirect
+    uci add_list smartdns.cfg016bb1.old_redirect='none'
+    uci del smartdns.cfg016bb1.old_port
+    uci add_list smartdns.cfg016bb1.old_port='53'
+    uci del smartdns.cfg016bb1.old_enabled
+    uci add_list smartdns.cfg016bb1.old_enabled='1'
+    uci commit smartdns
+    touch /etc/smartdns/ad.conf
+    cat >> /etc/smartdns/custom.conf << EOF
+
+
+# Include another configuration options
+conf-file /etc/smartdns/ad.conf
+
+# remote dns server list
+server 114.114.114.114 #114DNS
+server 114.114.115.115 #114DNS
+server 119.29.29.29 #TencentDNS
+server 182.254.116.116 #TencentDNS
+server 2402:4e00:: #TencentDNS
+server 223.5.5.5 #AlibabaDNS
+server 223.6.6.6 #AlibabaDNS
+server 2400:3200::1 #AlibabaDNS
+server 2400:3200:baba::1 #AlibabaDNS
+server 180.76.76.76 #BaiduDNS
+server 2400:da00::6666 #BaiduDNS
+server-tls 1.1.1.1 -group oversea -exclude-default-group #CloudflareDNS
+server-tls 1.0.0.1 -group oversea -exclude-default-group #CloudflareDNS
+server-https https://dns.cloudflare.com/dns-query -group oversea -exclude-default-group #CloudflareDNS
+server-tls 8.8.8.8 -group oversea -exclude-default-group #GoogleDNS
+server-tls 8.8.4.4 -group oversea -exclude-default-group #GoogleDNS
+server-https https://dns.google/dns-query -group oversea -exclude-default-group #GoogleDNS
+server-tls 208.67.222.222 -group oversea -exclude-default-group #OpenDNS
+server-tls 208.67.220.220 -group oversea -exclude-default-group #OpenDNS
+server-https https://doh.opendns.com/dns-query -group oversea -exclude-default-group #OpenDNS
+EOF
+    /etc/init.d/smartdns restart >> /etc/custom.tag
+    echo "smartdns remote dns server list finish" >> /etc/custom.tag
+
+    sleep 30
+
+    uci set ddns.test=service
+    uci set ddns.test.service_name='cloudflare.com-v4'
+    uci set ddns.test.use_ipv6='1'
+    uci set ddns.test.enabled='1'
+    uci set ddns.test.lookup_host='test.5icodes.com'
+    uci set ddns.test.domain='test@5icodes.com'
+    uci set ddns.test.username="\${DDNS_USERNAME}"
+    uci set ddns.test.password="\${DDNS_PASSWORD}"
+    uci set ddns.test.ip_source='network'
+    uci set ddns.test.ip_network='wan_6'
+    uci set ddns.test.interface='wan_6'
+    uci set ddns.test.use_syslog='2'
+    uci set ddns.test.check_unit='minutes'
+    uci set ddns.test.force_unit='minutes'
+    uci set ddns.test.retry_unit='seconds'
+    uci commit ddns
+    /etc/init.d/ddns restart >> /etc/custom.tag
+    echo "ddns finish" >> /etc/custom.tag
+
+    echo "dns.cloudflare.com" >> /etc/ssrplus/black.list
+    echo "dns.google" >> /etc/ssrplus/black.list
+    echo "doh.opendns.com" >> /etc/ssrplus/black.list
+    uci add_list shadowsocksr.cfg034417.wan_fw_ips='1.1.1.1'
+    uci add_list shadowsocksr.cfg034417.wan_fw_ips='1.0.0.1'
+    uci add_list shadowsocksr.cfg034417.wan_fw_ips='8.8.8.8'
+    uci add_list shadowsocksr.cfg034417.wan_fw_ips='8.8.4.4'
+    uci add_list shadowsocksr.cfg034417.wan_fw_ips='208.67.222.222'
+    uci add_list shadowsocksr.cfg034417.wan_fw_ips='208.67.220.220'
+    uci set shadowsocksr.cfg029e1d.auto_update='1'
+    uci set shadowsocksr.cfg029e1d.auto_update_time='4'
+    uci add_list shadowsocksr.cfg029e1d.subscribe_url="\${SSR_SUBSCRIBE_URL1}"
+    uci add_list shadowsocksr.cfg029e1d.subscribe_url="\${SSR_SUBSCRIBE_URL2}"
+    uci set shadowsocksr.cfg029e1d.filter_words="\${SSR_FILTER_WORDS}"
+    uci set shadowsocksr.cfg029e1d.save_words="\${SSR_SAVE_WORDS}"
+    uci set shadowsocksr.cfg029e1d.switch='1'
+    uci commit shadowsocksr
+    /usr/bin/lua /usr/share/shadowsocksr/subscribe.lua >> /etc/custom.tag
+    uci set shadowsocksr.cfg013fd6.global_server="\${SSR_GLOBAL_SERVER}"
+    uci set shadowsocksr.cfg013fd6.pdnsd_enable='0'
+    uci del shadowsocksr.cfg013fd6.tunnel_forward
+    uci commit shadowsocksr
+    /etc/init.d/shadowsocksr restart >> /etc/custom.tag
+    echo "shadowsocksr finish" >> /etc/custom.tag
+
+    fun1
+}
 
 if [ -f "/etc/custom.tag" ];then
-    exit 0
+    echo "smartdns block ad domain list start" > /etc/custom.tag
+    fun1 &
+else
+    touch /etc/custom.tag
+    fun &
 fi
-touch /etc/custom.tag
-
-fun &
 echo "rc.local finish" >> /etc/custom.tag
-
 exit 0
 EOFEOF
 
