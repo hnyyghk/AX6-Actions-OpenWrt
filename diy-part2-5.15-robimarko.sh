@@ -69,6 +69,7 @@ SSR_GLOBAL_SERVER=""
 refresh_ad_conf() {
     sleep 30
 
+    # grep -v "\." /etc/smartdns/ad.conf
     wget -c -P /etc/smartdns https://raw.githubusercontent.com/privacy-protection-tools/anti-AD/master/anti-ad-smartdns.conf 2>> /etc/custom.tag
     if [ -f "/etc/smartdns/anti-ad-smartdns.conf" ];then
         grep "^address" /etc/smartdns/anti-ad-smartdns.conf >> /etc/smartdns/aaa.conf
@@ -76,7 +77,7 @@ refresh_ad_conf() {
     fi
     wget -c -P /etc/smartdns https://raw.githubusercontent.com/neodevpro/neodevhost/master/smartdns.conf 2>> /etc/custom.tag
     if [ -f "/etc/smartdns/smartdns.conf" ];then
-        grep "^address" /etc/smartdns/smartdns.conf >> /etc/smartdns/aaa.conf
+        grep "^address" /etc/smartdns/smartdns.conf | grep -v "address /::1localhost/#" | grep -v "address /XiaoQiang/#" | grep -v "address /inf/#" >> /etc/smartdns/aaa.conf
         rm -f /etc/smartdns/smartdns.conf
     fi
     wget -c -P /etc/smartdns https://raw.githubusercontent.com/jdlingyu/ad-wars/master/sha_ad_hosts 2>> /etc/custom.tag
@@ -106,7 +107,7 @@ refresh_ad_conf() {
     fi
     wget -c -P /etc/smartdns https://raw.githubusercontent.com/VeleSila/yhosts/master/hosts.txt 2>> /etc/custom.tag
     if [ -f "/etc/smartdns/hosts.txt" ];then
-        grep "^0" /etc/smartdns/hosts.txt > /etc/smartdns/host.txt
+        grep "^0" /etc/smartdns/hosts.txt | grep -v "0.0.0.0 XiaoQiang" | grep -v "0.0.0.0 localhost" > /etc/smartdns/host.txt
         sed -i 's/0.0.0.0 /address \//g;s/$/&\/#/g' /etc/smartdns/host.txt
         cat /etc/smartdns/host.txt >> /etc/smartdns/aaa.conf
         rm -f /etc/smartdns/hosts.txt
@@ -118,11 +119,9 @@ address /ad1.xiaomi.com/#
 address /ad.mi.com/#
 address /tat.pandora.xiaomi.com/#
 address /api.ad.xiaomi.com/#
-address /t7z.cupid.ptqy.gitv.tv/#
 address /fix.hpplay.cn/#
 address /rps.hpplay.cn/#
 address /imdns.hpplay.cn/#
-address /f5.market.mi-img.com/#
 address /devicemgr.hpplay.cn/#
 address /rp.hpplay.cn/#
 address /tvapp.hpplay.cn/#
@@ -330,17 +329,17 @@ EOF
 }
 
 # 把局域网内所有客户端对外ipv4的53端口查询请求，都劫持指向路由器(iptables -n -t nat -L PREROUTING -v --line-number)(iptables -t nat -D PREROUTING 2)
-# allow queries to router
+# allow ipv4 dns queries to router
 iptables -t nat -A PREROUTING -p udp --dport 53 -d \$(uci get network.lan.ipaddr) -j ACCEPT
 iptables -t nat -A PREROUTING -p tcp --dport 53 -d \$(uci get network.lan.ipaddr) -j ACCEPT
-# anything else is hijacked
+# hijack the rest of ipv4 dns queries
 iptables -t nat -A PREROUTING -p udp --dport 53 -j REDIRECT --to-ports 53
 iptables -t nat -A PREROUTING -p tcp --dport 53 -j REDIRECT --to-ports 53
 # 把局域网内所有客户端对外ipv6的53端口查询请求，都劫持指向路由器(ip6tables -n -t nat -L PREROUTING -v --line-number)(ip6tables -t nat -D PREROUTING 1)
-# allow queries to router
+# allow ipv6 dns queries to router
 [ -n "$(command -v ip6tables)" ] && ip6tables -t nat -A PREROUTING -p udp --dport 53 -d \$(uci get network.globals.ula_prefix | sed 's/\/48/1/g') -j ACCEPT
 [ -n "$(command -v ip6tables)" ] && ip6tables -t nat -A PREROUTING -p tcp --dport 53 -d \$(uci get network.globals.ula_prefix | sed 's/\/48/1/g') -j ACCEPT
-# anything else is hijacked
+# hijack the rest of ipv6 dns queries
 [ -n "$(command -v ip6tables)" ] && ip6tables -t nat -A PREROUTING -p udp --dport 53 -j REDIRECT --to-ports 53
 [ -n "$(command -v ip6tables)" ] && ip6tables -t nat -A PREROUTING -p tcp --dport 53 -j REDIRECT --to-ports 53
 # 把局域网内所有客户端对外ipv4和ipv6的53端口查询请求，都劫持指向路由器(nft --handle list chain inet fw4 dstnat)(nft delete rule inet fw4 dstnat handle 337)
