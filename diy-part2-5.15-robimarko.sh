@@ -71,6 +71,7 @@ refresh_ad_conf() {
 
     # grep -v "\." /etc/smartdns/ad.conf
     # grep "address /api.xiaomi.com/#" /etc/smartdns/ad.conf
+    # grep "*" /etc/smartdns/ad.conf
     wget -c -P /etc/smartdns https://raw.githubusercontent.com/privacy-protection-tools/anti-AD/master/anti-ad-smartdns.conf 2>> /etc/custom.tag
     if [ -f "/etc/smartdns/anti-ad-smartdns.conf" ];then
         grep "^address" /etc/smartdns/anti-ad-smartdns.conf >> /etc/smartdns/aaa.conf
@@ -85,6 +86,7 @@ refresh_ad_conf() {
     if [ -f "/etc/smartdns/sha_ad_hosts" ];then
         grep "^127" /etc/smartdns/sha_ad_hosts > /etc/smartdns/host
         sed -i '1d' /etc/smartdns/host
+        sed -i 's/127.0.0.1 \*\./127.0.0.1 /g' /etc/smartdns/host
         sed -i 's/127.0.0.1 /address \//g;s/$/&\/#/g' /etc/smartdns/host
         cat /etc/smartdns/host >> /etc/smartdns/aaa.conf
         rm -f /etc/smartdns/sha_ad_hosts
