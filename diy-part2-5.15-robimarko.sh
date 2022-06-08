@@ -70,6 +70,7 @@ refresh_ad_conf() {
     sleep 30
 
     # grep -v "\." /etc/smartdns/ad.conf
+    # grep "address /api.xiaomi.com/#" /etc/smartdns/ad.conf
     wget -c -P /etc/smartdns https://raw.githubusercontent.com/privacy-protection-tools/anti-AD/master/anti-ad-smartdns.conf 2>> /etc/custom.tag
     if [ -f "/etc/smartdns/anti-ad-smartdns.conf" ];then
         grep "^address" /etc/smartdns/anti-ad-smartdns.conf >> /etc/smartdns/aaa.conf
@@ -77,7 +78,7 @@ refresh_ad_conf() {
     fi
     wget -c -P /etc/smartdns https://raw.githubusercontent.com/neodevpro/neodevhost/master/smartdns.conf 2>> /etc/custom.tag
     if [ -f "/etc/smartdns/smartdns.conf" ];then
-        grep "^address" /etc/smartdns/smartdns.conf | grep -v "address /::1localhost/#" | grep -v "address /XiaoQiang/#" | grep -v "address /inf/#" >> /etc/smartdns/aaa.conf
+        grep "^address" /etc/smartdns/smartdns.conf | grep -v "address /api.xiaomi.com/#" | grep -v "address /::1localhost/#" | grep -v "address /XiaoQiang/#" | grep -v "address /inf/#" >> /etc/smartdns/aaa.conf
         rm -f /etc/smartdns/smartdns.conf
     fi
     wget -c -P /etc/smartdns https://raw.githubusercontent.com/jdlingyu/ad-wars/master/sha_ad_hosts 2>> /etc/custom.tag
