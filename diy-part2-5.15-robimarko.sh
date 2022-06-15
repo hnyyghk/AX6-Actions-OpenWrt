@@ -90,6 +90,15 @@ refresh_ad_conf() {
         rm -f /etc/smartdns/sha_ad_hosts
         rm -f /etc/smartdns/host
     fi
+    wget -c -P /etc/smartdns https://raw.githubusercontent.com/AdAway/adaway.github.io/master/hosts.txt 2>> /etc/custom.tag
+    if [ -f "/etc/smartdns/hosts.txt" ]; then
+        grep "^127" /etc/smartdns/hosts.txt > /etc/smartdns/host
+        sed -i '1d' /etc/smartdns/host
+        sed -i 's/127.0.0.1 /address \//g;s/$/&\/#/g' /etc/smartdns/host
+        cat /etc/smartdns/host >> /etc/smartdns/aaa.conf
+        rm -f /etc/smartdns/hosts.txt
+        rm -f /etc/smartdns/host
+    fi
     wget -c -P /etc/smartdns https://raw.githubusercontent.com/FuckNoMotherCompanyAlliance/Fuck_CJMarketing_hosts/master/hosts 2>> /etc/custom.tag
     if [ -f "/etc/smartdns/hosts" ];then
         grep "^0" /etc/smartdns/hosts > /etc/smartdns/host
@@ -114,12 +123,39 @@ refresh_ad_conf() {
         rm -f /etc/smartdns/hosts.txt
         rm -f /etc/smartdns/host.txt
     fi
+    wget -c -P /etc/smartdns https://raw.githubusercontent.com/Loyalsoldier/v2ray-rules-dat/release/reject-list.txt 2>> /etc/custom.tag
+    if [ -f "/etc/smartdns/reject-list.txt" ];then
+        sed -i 's/^/address \//g' /etc/smartdns/reject-list.txt
+        sed -i 's/$/\/#/g' /etc/smartdns/reject-list.txt
+        cat /etc/smartdns/reject-list.txt >> /etc/smartdns/aaa.conf
+        rm -f /etc/smartdns/reject-list.txt
+    fi
+    wget -c -P /etc/smartdns https://raw.githubusercontent.com/Loyalsoldier/v2ray-rules-dat/release/win-spy.txt 2>> /etc/custom.tag
+    if [ -f "/etc/smartdns/win-spy.txt" ];then
+        sed -i 's/^/address \//g' /etc/smartdns/win-spy.txt
+        sed -i 's/$/\/#/g' /etc/smartdns/win-spy.txt
+        cat /etc/smartdns/win-spy.txt >> /etc/smartdns/aaa.conf
+        rm -f /etc/smartdns/win-spy.txt
+    fi
+    wget -c -P /etc/smartdns https://raw.githubusercontent.com/Loyalsoldier/v2ray-rules-dat/release/win-update.txt 2>> /etc/custom.tag
+    if [ -f "/etc/smartdns/win-update.txt" ];then
+        sed -i 's/^/address \//g' /etc/smartdns/win-update.txt
+        sed -i 's/$/\/#/g' /etc/smartdns/win-update.txt
+        cat /etc/smartdns/win-update.txt >> /etc/smartdns/aaa.conf
+        rm -f /etc/smartdns/win-update.txt
+    fi
+    wget -c -P /etc/smartdns https://raw.githubusercontent.com/Loyalsoldier/v2ray-rules-dat/release/win-extra.txt 2>> /etc/custom.tag
+    if [ -f "/etc/smartdns/win-extra.txt" ];then
+        sed -i 's/^/address \//g' /etc/smartdns/win-extra.txt
+        sed -i 's/$/\/#/g' /etc/smartdns/win-extra.txt
+        cat /etc/smartdns/win-extra.txt >> /etc/smartdns/aaa.conf
+        rm -f /etc/smartdns/win-extra.txt
+    fi
     cat >> /etc/smartdns/aaa.conf << EOF
 address /ad.xiaomi.com/#
 address /ad1.xiaomi.com/#
 address /ad.mi.com/#
 address /tat.pandora.xiaomi.com/#
-address /api.ad.xiaomi.com/#
 address /fix.hpplay.cn/#
 address /rps.hpplay.cn/#
 address /imdns.hpplay.cn/#
@@ -163,6 +199,53 @@ address /f4.market.mi-img.com/#
 address /f3.market.mi-img.com/#
 address /f2.market.mi-img.com/#
 address /f1.market.mi-img.com/#
+address /519332DA.dr.youme.im/#
+address /aiseet.aa.aisee.tv/#
+address /api.hismarttv.com/#
+address /e.dangbei.com/#
+address /g.dtv.cn.miaozhan.com/#
+address /i.mxplayer.j2inter.com/#
+address /icsc.sps.expressplay.cn/#
+address /misc.in.duokanbox.com/#
+address /natdetection.onethingpcs.com/#
+address /p2sdk1.mona.p2cdn.com/#
+address /pandora.mi.com/#
+address /loc.map.baidu.com/#
+address /ofloc.map.baidu.com/#
+address /si.super-ssp.tv/#
+address /sr.super-ssp.tv/#
+address /yt3.ggpht.com/#
+address /tv.aiseet.atianqi.com/#
+address /vv.play.aiseet.atianqi.com/#
+address /userapi.hpplay.cn/#
+address /pay.hpplay.cn/#
+address /tvapi.hpplay.com.cn/#
+address /switch.hpplay.com.cn/#
+address /lic.hpplay.com.cn/#
+address /data.hpplay.com.cn/#
+address /upgrade.ptmi.gitv.tv/#
+address /appstore.ptmi.gitv.tv/#
+address /gamecenter.ptmi.gitv.tv/#
+address /p2pupdate.inter.ptqy.gitv.tv/#
+address /data.video.ptqy.gitv.tv/#
+address /auth.api.gitv.tv/#
+address /tv.weixin.pandora.xiaomi.com/#
+address /tvmanager.pandora.xiaomi.com/#
+address /tvmgr.pandora.xiaomi.com/#
+address /redirect.pandora.xiaomi.com/#
+address /package.cdn.pandora.xiaomi.com/#
+address /ota.cdn.pandora.xiaomi.com/#
+address /milink.pandora.xiaomi.com/#
+address /appstore.cdn.pandora.xiaomi.com/#
+address /appstore.pandora.xiaomi.com/#
+address /assistant.pandora.xiaomi.com/#
+address /broker.mqtt.pandora.xiaomi.com/#
+address /staging.ai.api.xiaomi.com/#
+address /as.xiaomi.com/#
+address /d1.xiaomi.com/#
+address /market.xiaomi.com/#
+address /file.xmpush.xiaomi.com/#
+address /tracker.live.xycdn.com/#
 EOF
     echo "# block ad domain list" > /etc/smartdns/ad.conf
     sort -u /etc/smartdns/aaa.conf >> /etc/smartdns/ad.conf
