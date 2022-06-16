@@ -60,9 +60,7 @@ PPPOE_USERNAME=""
 PPPOE_PASSWORD=""
 DDNS_USERNAME=""
 DDNS_PASSWORD=""
-SSR_SUBSCRIBE_URL1=""
-SSR_SUBSCRIBE_URL2=""
-SSR_FILTER_WORDS=""
+SSR_SUBSCRIBE_URL=""
 SSR_SAVE_WORDS=""
 SSR_GLOBAL_SERVER=""
 
@@ -200,12 +198,12 @@ init_custom_config() {
     uci set smartdns.cfg016bb1.seconddns_server_group='oversea'
     uci set smartdns.cfg016bb1.seconddns_no_speed_check='1'
     uci set smartdns.cfg016bb1.seconddns_no_rule_addr='0'
-    uci set smartdns.cfg016bb1.seconddns_no_rule_nameserver='0'
+    uci set smartdns.cfg016bb1.seconddns_no_rule_nameserver='1'
     uci set smartdns.cfg016bb1.seconddns_no_rule_ipset='0'
     uci set smartdns.cfg016bb1.seconddns_no_rule_soa='0'
-    uci set smartdns.cfg016bb1.seconddns_no_dualstack_selection='0'
-    uci set smartdns.cfg016bb1.seconddns_no_cache='0'
-    uci set smartdns.cfg016bb1.force_aaaa_soa='0'
+    uci set smartdns.cfg016bb1.seconddns_no_dualstack_selection='1'
+    uci set smartdns.cfg016bb1.seconddns_no_cache='1'
+    uci set smartdns.cfg016bb1.force_aaaa_soa='1'
     uci set smartdns.cfg016bb1.coredump='0'
     uci del smartdns.cfg016bb1.old_redirect
     uci add_list smartdns.cfg016bb1.old_redirect='none'
@@ -222,20 +220,23 @@ init_custom_config() {
 conf-file /etc/smartdns/ad.conf
 
 # remote dns server list
-server 114.114.114.114 #114DNS
-server 114.114.115.115 #114DNS
-server 119.29.29.29 #TencentDNS
-server 182.254.116.116 #TencentDNS
-server 2402:4e00:: #TencentDNS
-server 223.5.5.5 #AlibabaDNS
-server 223.6.6.6 #AlibabaDNS
-server 2400:3200::1 #AlibabaDNS
-server 2400:3200:baba::1 #AlibabaDNS
-server 180.76.76.76 #BaiduDNS
-server 2400:da00::6666 #BaiduDNS
+server 114.114.114.114 -group china #114DNS
+server 114.114.115.115 -group china #114DNS
+server 119.29.29.29 -group china #TencentDNS
+server 182.254.116.116 -group china #TencentDNS
+server 2402:4e00:: -group china #TencentDNS
+server-tls 223.5.5.5 -group china -group bootstrap #AlibabaDNS
+server-tls 223.6.6.6 -group china -group bootstrap #AlibabaDNS
+server-tls 2400:3200::1 -group china -group bootstrap #AlibabaDNS
+server-tls 2400:3200:baba::1 -group china -group bootstrap #AlibabaDNS
+server 180.76.76.76 -group china #BaiduDNS
+server 2400:da00::6666 -group china #BaiduDNS
+nameserver /cloudflare-dns.com/bootstrap
+nameserver /dns.google/bootstrap
+nameserver /doh.opendns.com/bootstrap
 server-tls 1.1.1.1 -group oversea -exclude-default-group #CloudflareDNS
 server-tls 1.0.0.1 -group oversea -exclude-default-group #CloudflareDNS
-server-https https://dns.cloudflare.com/dns-query -group oversea -exclude-default-group #CloudflareDNS
+server-https https://cloudflare-dns.com/dns-query -group oversea -exclude-default-group #CloudflareDNS
 server-tls 8.8.8.8 -group oversea -exclude-default-group #GoogleDNS
 server-tls 8.8.4.4 -group oversea -exclude-default-group #GoogleDNS
 server-https https://dns.google/dns-query -group oversea -exclude-default-group #GoogleDNS
@@ -303,7 +304,7 @@ EOF
     /etc/init.d/ddns restart >> /etc/custom.tag
     echo "ddns finish" >> /etc/custom.tag
 
-    echo "dns.cloudflare.com" >> /etc/ssrplus/black.list
+    echo "cloudflare-dns.com" >> /etc/ssrplus/black.list
     echo "dns.google" >> /etc/ssrplus/black.list
     echo "doh.opendns.com" >> /etc/ssrplus/black.list
     uci add_list shadowsocksr.cfg034417.wan_fw_ips='1.1.1.1'
@@ -314,9 +315,7 @@ EOF
     uci add_list shadowsocksr.cfg034417.wan_fw_ips='208.67.220.220'
     uci set shadowsocksr.cfg029e1d.auto_update='1'
     uci set shadowsocksr.cfg029e1d.auto_update_time='4'
-    uci add_list shadowsocksr.cfg029e1d.subscribe_url="\${SSR_SUBSCRIBE_URL1}"
-    uci add_list shadowsocksr.cfg029e1d.subscribe_url="\${SSR_SUBSCRIBE_URL2}"
-    uci set shadowsocksr.cfg029e1d.filter_words="\${SSR_FILTER_WORDS}"
+    uci add_list shadowsocksr.cfg029e1d.subscribe_url="\${SSR_SUBSCRIBE_URL}"
     uci set shadowsocksr.cfg029e1d.save_words="\${SSR_SAVE_WORDS}"
     uci set shadowsocksr.cfg029e1d.switch='1'
     uci commit shadowsocksr
@@ -411,3 +410,9 @@ echo "                                                               " >> packag
 #        proxy_pass http://localhost:19999;
 #    }
 #}
+
+# 移除重复软件包
+rm -rf feeds/packages/net/xray-core
+
+./scripts/feeds update -a
+./scripts/feeds install -a
