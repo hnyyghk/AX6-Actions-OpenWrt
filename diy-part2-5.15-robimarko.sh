@@ -503,6 +503,7 @@ echo "                                                               " >> packag
 
 # 移除重复软件包
 rm -rf feeds/packages/net/xray-core
+rm -rf feeds/packages/net/adguardhome
 
 ./scripts/feeds update -a
 ./scripts/feeds install -a
