@@ -40,10 +40,9 @@ sed -i 's/192.168.1.1/192.168.31.1/g' package/base-files/files/bin/config_genera
 # 修正连接数（by ベ七秒鱼ベ）
 sed -i '/customized in this file/a net.netfilter.nf_conntrack_max=165535' package/base-files/files/etc/sysctl.conf
 
-# Ax6修改无线国家代码、命名、加密方式及密码
-sed -i 's/radio${devidx}.country=US/radio${devidx}.country=CN/g' package/kernel/mac80211/files/lib/wifi/mac80211.sh
+# Ax6修改无线命名、加密方式及密码
 sed -i "s/radio\${devidx}.ssid=OpenWrt/radio0.ssid=${WIFI_SSID}\n\t\t\tset wireless.default_radio1.ssid=${WIFI_SSID}_2.4G/g" package/kernel/mac80211/files/lib/wifi/mac80211.sh
-sed -i "s/radio\${devidx}.encryption=none/radio\${devidx}.encryption=psk-mixed\n\t\t\tset wireless.default_radio\${devidx}.key=${WIFI_KEY}/g" package/kernel/mac80211/files/lib/wifi/mac80211.sh
+sed -i "s/radio\${devidx}.encryption=none/radio\${devidx}.encryption=psk-mixed\n\t\t\tset wireless.default_radio\${devidx}.key=${WIFI_KEY}\n\t\t\tset wireless.default_radio\${devidx}.iw_qos_map_set=none/g" package/kernel/mac80211/files/lib/wifi/mac80211.sh
 
 # Modify default banner
 echo 'Modify default banner...'
