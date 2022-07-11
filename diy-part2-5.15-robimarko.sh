@@ -419,6 +419,47 @@ EOF
     /etc/init.d/shadowsocksr restart >> /etc/custom.tag 2>&1
     echo "shadowsocksr finish" >> /etc/custom.tag
 
+    # crontab -l 查看计划表
+    uci set acme.cfg01f3db.account_email="\${DDNS_USERNAME}"
+    uci set acme.cfg01f3db.debug='1'
+
+    uci set acme.test=cert
+    uci set acme.test.enabled='1'
+    uci set acme.test.use_staging='0'
+    uci set acme.test.keylength='2048'
+    uci add_list acme.test.domains='test.5icodes.com'
+    uci set acme.test.update_uhttpd='0'
+    uci set acme.test.update_nginx='0'
+    uci set acme.test.validation_method='dns'
+    uci set acme.test.dns='dns_cf'
+    uci add_list acme.test.credentials="CF_Email=\${DDNS_USERNAME}"
+    uci add_list acme.test.credentials="CF_Key=\${DDNS_PASSWORD}"
+
+    uci set acme.wildcard=cert
+    uci set acme.wildcard.enabled='1'
+    uci set acme.wildcard.use_staging='0'
+    uci set acme.wildcard.keylength='2048'
+    uci add_list acme.wildcard.domains='5icodes.com'
+    uci add_list acme.wildcard.domains='*.5icodes.com'
+    uci set acme.wildcard.update_uhttpd='0'
+    uci set acme.wildcard.update_nginx='0'
+    uci set acme.wildcard.validation_method='dns'
+    uci set acme.wildcard.dns='dns_cf'
+    uci add_list acme.wildcard.credentials="CF_Email=\${DDNS_USERNAME}"
+    uci add_list acme.wildcard.credentials="CF_Key=\${DDNS_PASSWORD}"
+
+    uci commit acme
+    /usr/bin/acme get >> /etc/custom.tag 2>&1
+    mkdir -p /data/5icodes.com/test./cert
+    /usr/lib/acme/client/acme.sh --home "/etc/acme" --install-cert -d test.5icodes.com --key-file /data/5icodes.com/test./cert/_lan.key --fullchain-file /data/5icodes.com/test./cert/_lan.crt --reloadcmd "service nginx reload" >> /etc/custom.tag 2>&1
+    mkdir -p /data/5icodes.com/cert
+    /usr/lib/acme/client/acme.sh --home "/etc/acme" --install-cert -d 5icodes.com --key-file /data/5icodes.com/cert/_lan.key --fullchain-file /data/5icodes.com/cert/_lan.crt --reloadcmd "service nginx reload" >> /etc/custom.tag 2>&1
+    echo "acme finish" >> /etc/custom.tag
+
+    # to generate your dhparam.pem file, run in the terminal
+    openssl dhparam -out /data/5icodes.com/cert/dhparam.pem 2048 >> /etc/custom.tag 2>&1
+    echo "dhparam finish" >> /etc/custom.tag
+
     refresh_ad_conf
 }
 
