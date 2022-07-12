@@ -183,17 +183,18 @@ address /market.xiaomi.com/#
 address /file.xmpush.xiaomi.com/#
 address /tracker.live.xycdn.com/#
 EOF
-    wget -c -P /etc/smartdns https://raw.githubusercontent.com/privacy-protection-tools/anti-AD/master/anti-ad-smartdns.conf >> /etc/custom.tag 2>&1
+    # -t 重试次数 -T 超时时间 -c 断点续传 -P 下载到指定路径 -q 不显示执行过程 -O 以指定的文件名保存 -O- 以'-'作为file参数，将数据打印到标准输出，通常为控制台
+    wget -t 1 -T 10 -c -P /etc/smartdns https://raw.githubusercontent.com/privacy-protection-tools/anti-AD/master/anti-ad-smartdns.conf >> /etc/custom.tag 2>&1
     if [ -f "/etc/smartdns/anti-ad-smartdns.conf" ]; then
         grep "^address" /etc/smartdns/anti-ad-smartdns.conf | grep -v "address /pv.kuaizhan.com/#" | grep -v "address /changyan.sohu.com/#" >> /etc/smartdns/aaa.conf
         rm -f /etc/smartdns/anti-ad-smartdns.conf
     fi
-    wget -c -P /etc/smartdns https://raw.githubusercontent.com/neodevpro/neodevhost/master/smartdns.conf >> /etc/custom.tag 2>&1
+    wget -t 1 -T 10 -c -P /etc/smartdns https://raw.githubusercontent.com/neodevpro/neodevhost/master/smartdns.conf >> /etc/custom.tag 2>&1
     if [ -f "/etc/smartdns/smartdns.conf" ]; then
         grep "^address" /etc/smartdns/smartdns.conf | grep "\." | grep -v "address /pv.kuaizhan.com/#" | grep -v "address /changyan.sohu.com/#" | sed 's/\.\/#$/\/#/g' >> /etc/smartdns/aaa.conf
         rm -f /etc/smartdns/smartdns.conf
     fi
-    wget -c -P /etc/smartdns https://raw.githubusercontent.com/jdlingyu/ad-wars/master/sha_ad_hosts >> /etc/custom.tag 2>&1
+    wget -t 1 -T 10 -c -P /etc/smartdns https://raw.githubusercontent.com/jdlingyu/ad-wars/master/sha_ad_hosts >> /etc/custom.tag 2>&1
     if [ -f "/etc/smartdns/sha_ad_hosts" ]; then
         grep "^127" /etc/smartdns/sha_ad_hosts > /etc/smartdns/host
         sed -i '1d' /etc/smartdns/host
@@ -203,7 +204,7 @@ EOF
         rm -f /etc/smartdns/host
         rm -f /etc/smartdns/sha_ad_hosts
     fi
-    wget -c -P /etc/smartdns https://raw.githubusercontent.com/AdAway/adaway.github.io/master/hosts.txt >> /etc/custom.tag 2>&1
+    wget -t 1 -T 10 -c -P /etc/smartdns https://raw.githubusercontent.com/AdAway/adaway.github.io/master/hosts.txt >> /etc/custom.tag 2>&1
     if [ -f "/etc/smartdns/hosts.txt" ]; then
         grep "^127" /etc/smartdns/hosts.txt > /etc/smartdns/host
         sed -i '1d' /etc/smartdns/host
@@ -212,7 +213,7 @@ EOF
         rm -f /etc/smartdns/host
         rm -f /etc/smartdns/hosts.txt
     fi
-    wget -c -P /etc/smartdns https://raw.githubusercontent.com/FuckNoMotherCompanyAlliance/Fuck_CJMarketing_hosts/master/hosts >> /etc/custom.tag 2>&1
+    wget -t 1 -T 10 -c -P /etc/smartdns https://raw.githubusercontent.com/FuckNoMotherCompanyAlliance/Fuck_CJMarketing_hosts/master/hosts >> /etc/custom.tag 2>&1
     if [ -f "/etc/smartdns/hosts" ]; then
         grep "^0" /etc/smartdns/hosts | tr -d "\r" > /etc/smartdns/host
         sed -i 's/www.xitongqingli.com /www.xitongqingli.com/g' /etc/smartdns/host
@@ -221,7 +222,7 @@ EOF
         rm -f /etc/smartdns/host
         rm -f /etc/smartdns/hosts
     fi
-    wget -c -P /etc/smartdns https://raw.githubusercontent.com/Goooler/1024_hosts/master/hosts >> /etc/custom.tag 2>&1
+    wget -t 1 -T 10 -c -P /etc/smartdns https://raw.githubusercontent.com/Goooler/1024_hosts/master/hosts >> /etc/custom.tag 2>&1
     if [ -f "/etc/smartdns/hosts" ]; then
         grep "^127" /etc/smartdns/hosts | tr -d "\r" | sed 's/\.$//g' > /etc/smartdns/host
         sed -i 's/127.0.0.1 /address \//g;s/$/\/#/g' /etc/smartdns/host
@@ -229,7 +230,7 @@ EOF
         rm -f /etc/smartdns/host
         rm -f /etc/smartdns/hosts
     fi
-    wget -c -P /etc/smartdns https://raw.githubusercontent.com/VeleSila/yhosts/master/hosts.txt >> /etc/custom.tag 2>&1
+    wget -t 1 -T 10 -c -P /etc/smartdns https://raw.githubusercontent.com/VeleSila/yhosts/master/hosts.txt >> /etc/custom.tag 2>&1
     if [ -f "/etc/smartdns/hosts.txt" ]; then
         grep "^0" /etc/smartdns/hosts.txt | grep -v "0.0.0.0 XiaoQiang" | grep -v "0.0.0.0 localhost" | sed 's/\.$//g' > /etc/smartdns/host.txt
         sed -i 's/0.0.0.0 /address \//g;s/$/\/#/g' /etc/smartdns/host.txt
@@ -237,7 +238,7 @@ EOF
         rm -f /etc/smartdns/host.txt
         rm -f /etc/smartdns/hosts.txt
     fi
-    wget -c -P /etc/smartdns https://raw.githubusercontent.com/StevenBlack/hosts/master/alternates/fakenews-gambling/hosts >> /etc/custom.tag 2>&1
+    wget -t 1 -T 10 -c -P /etc/smartdns https://raw.githubusercontent.com/StevenBlack/hosts/master/alternates/fakenews-gambling/hosts >> /etc/custom.tag 2>&1
     if [ -f "/etc/smartdns/hosts" ]; then
         grep "^0" /etc/smartdns/hosts | sed 's/[ ]*#.*$//g' > /etc/smartdns/host.txt
         sed -i '1d' /etc/smartdns/host.txt
@@ -246,7 +247,7 @@ EOF
         rm -f /etc/smartdns/host.txt
         rm -f /etc/smartdns/hosts
     fi
-    wget -c -P /etc/smartdns https://raw.githubusercontent.com/Loyalsoldier/v2ray-rules-dat/release/reject-list.txt >> /etc/custom.tag 2>&1
+    wget -t 1 -T 10 -c -P /etc/smartdns https://raw.githubusercontent.com/Loyalsoldier/v2ray-rules-dat/release/reject-list.txt >> /etc/custom.tag 2>&1
     if [ -f "/etc/smartdns/reject-list.txt" ]; then
         sed -i 's/^/address \//g;s/$/\/#/g' /etc/smartdns/reject-list.txt
         cat /etc/smartdns/reject-list.txt | grep -v "address /pv.kuaizhan.com/#" >> /etc/smartdns/aaa.conf
@@ -259,6 +260,56 @@ EOF
 }
 
 init_custom_config() {
+    sleep 30
+
+    uci set network.wan.proto='pppoe'
+    uci set network.wan.username="\${PPPOE_USERNAME}"
+    uci set network.wan.password="\${PPPOE_PASSWORD}"
+    uci set network.wan.ipv6='auto'
+    uci set network.wan.peerdns='0'
+    uci add_list network.wan.dns='127.0.0.1'
+    uci set network.modem=interface
+    uci set network.modem.proto='dhcp'
+    uci set network.modem.device='eth0'
+    uci set network.modem.defaultroute='0'
+    uci set network.modem.peerdns='0'
+    uci set network.modem.delegate='0'
+    uci commit network
+    /etc/init.d/network restart >> /etc/custom.tag 2>&1
+    echo "network finish" >> /etc/custom.tag
+
+    sleep 30
+
+    # hijack dns queries to router(firewall4)
+    # 把局域网内所有客户端对外ipv4和ipv6的53端口查询请求，都劫持指向路由器(nft list chain inet fw4 dns-redirect)(nft delete chain inet fw4 dns-redirect)
+    cat >> /etc/nftables.d/10-custom-filter-chains.nft << EOF
+chain dns-redirect {
+    type nat hook prerouting priority -105;
+    udp dport 53 counter redirect to :53
+    tcp dport 53 counter redirect to :53
+}
+
+EOF
+    uci add_list firewall.cfg03dc81.network='modem'
+    uci commit firewall
+    /etc/init.d/firewall restart >> /etc/custom.tag 2>&1
+    echo "firewall finish" >> /etc/custom.tag
+
+    uci set ttyd.cfg01a8ea.ssl='1'
+    uci set ttyd.cfg01a8ea.ssl_cert='/etc/nginx/conf.d/_lan.crt'
+    uci set ttyd.cfg01a8ea.ssl_key='/etc/nginx/conf.d/_lan.key'
+    uci commit ttyd
+    /etc/init.d/ttyd restart >> /etc/custom.tag 2>&1
+    echo "ttyd finish" >> /etc/custom.tag
+
+    uci set autoreboot.cfg01f8be.enable='1'
+    uci set autoreboot.cfg01f8be.week='7'
+    uci set autoreboot.cfg01f8be.hour='3'
+    uci set autoreboot.cfg01f8be.minute='30'
+    uci commit autoreboot
+    /etc/init.d/autoreboot restart >> /etc/custom.tag 2>&1
+    echo "autoreboot finish" >> /etc/custom.tag
+
     sleep 30
 
     uci set smartdns.cfg016bb1.enabled='1'
@@ -329,53 +380,7 @@ EOF
     /etc/init.d/smartdns restart >> /etc/custom.tag 2>&1
     echo "smartdns remote dns server list finish" >> /etc/custom.tag
 
-    uci set network.wan.proto='pppoe'
-    uci set network.wan.username="\${PPPOE_USERNAME}"
-    uci set network.wan.password="\${PPPOE_PASSWORD}"
-    uci set network.wan.ipv6='auto'
-    uci set network.wan.peerdns='0'
-    uci add_list network.wan.dns='127.0.0.1'
-    uci set network.modem=interface
-    uci set network.modem.proto='dhcp'
-    uci set network.modem.device='eth0'
-    uci set network.modem.defaultroute='0'
-    uci set network.modem.peerdns='0'
-    uci set network.modem.delegate='0'
-    uci commit network
-    /etc/init.d/network restart >> /etc/custom.tag 2>&1
-    echo "network finish" >> /etc/custom.tag
-
     sleep 30
-
-    # hijack dns queries to router(firewall4)
-    # 把局域网内所有客户端对外ipv4和ipv6的53端口查询请求，都劫持指向路由器(nft list chain inet fw4 dns-redirect)(nft delete chain inet fw4 dns-redirect)
-    cat >> /etc/nftables.d/10-custom-filter-chains.nft << EOF
-chain dns-redirect {
-    type nat hook prerouting priority -105;
-    udp dport 53 counter redirect to :53
-    tcp dport 53 counter redirect to :53
-}
-
-EOF
-    uci add_list firewall.cfg03dc81.network='modem'
-    uci commit firewall
-    /etc/init.d/firewall restart >> /etc/custom.tag 2>&1
-    echo "firewall finish" >> /etc/custom.tag
-
-    uci set ttyd.cfg01a8ea.ssl='1'
-    uci set ttyd.cfg01a8ea.ssl_cert='/etc/nginx/conf.d/_lan.crt'
-    uci set ttyd.cfg01a8ea.ssl_key='/etc/nginx/conf.d/_lan.key'
-    uci commit ttyd
-    /etc/init.d/ttyd restart >> /etc/custom.tag 2>&1
-    echo "ttyd finish" >> /etc/custom.tag
-
-    uci set autoreboot.cfg01f8be.enable='1'
-    uci set autoreboot.cfg01f8be.week='7'
-    uci set autoreboot.cfg01f8be.hour='3'
-    uci set autoreboot.cfg01f8be.minute='30'
-    uci commit autoreboot
-    /etc/init.d/autoreboot restart >> /etc/custom.tag 2>&1
-    echo "autoreboot finish" >> /etc/custom.tag
 
     uci set ddns.test=service
     uci set ddns.test.service_name='cloudflare.com-v4'
