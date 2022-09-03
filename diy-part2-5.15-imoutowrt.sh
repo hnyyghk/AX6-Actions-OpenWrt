@@ -13,15 +13,27 @@
 # https://github.com/deplives/OpenWrt-CI-RC/blob/main/second.sh
 # https://github.com/jarod360/Redmi_AX6/blob/main/diy-part2.sh
 
-COMMIT_COMMENT=$1
-if [ -z "$COMMIT_COMMENT" ]; then
-    COMMIT_COMMENT='Unknown'
+REPO_URL=$1
+if [ -z "$REPO_URL" ]; then
+    REPO_URL='Unknown'
 fi
-WIFI_SSID=$2
+REPO_BRANCH=$2
+if [ -z "$REPO_BRANCH" ]; then
+    REPO_BRANCH='Unknown'
+fi
+COMMIT_HASH=$3
+if [ -z "$COMMIT_HASH" ]; then
+    COMMIT_HASH='Unknown'
+fi
+DEVICE_NAME=$4
+if [ -z "$DEVICE_NAME" ]; then
+    DEVICE_NAME='Unknown'
+fi
+WIFI_SSID=$5
 if [ -z "$WIFI_SSID" ]; then
     WIFI_SSID='Unknown'
 fi
-WIFI_KEY=$3
+WIFI_KEY=$6
 if [ -z "$WIFI_KEY" ]; then
     WIFI_KEY='Unknown'
 fi
@@ -56,6 +68,10 @@ echo "╚██████╔╝██║     ███████╗██║
 echo " ╚═════╝ ╚═╝     ╚══════╝╚═╝  ╚═══╝ ╚══╝╚══╝ ╚═╝  ╚═╝   ╚═╝    " >> package/base-files/files/etc/banner
 echo " ------------------------------------------------------------- " >> package/base-files/files/etc/banner
 echo " %D %C ${build_date} by hnyyghk                                " >> package/base-files/files/etc/banner
-echo " $COMMIT_COMMENT                                               " >> package/base-files/files/etc/banner
+echo " ------------------------------------------------------------- " >> package/base-files/files/etc/banner
+echo "      REPO_URL: $REPO_URL                                      " >> package/base-files/files/etc/banner
+echo "   REPO_BRANCH: $REPO_BRANCH                                   " >> package/base-files/files/etc/banner
+echo "   COMMIT_HASH: $COMMIT_HASH                                   " >> package/base-files/files/etc/banner
+echo "   DEVICE_NAME: $DEVICE_NAME                                 " >> package/base-files/files/etc/banner
 echo " ------------------------------------------------------------- " >> package/base-files/files/etc/banner
 echo "                                                               " >> package/base-files/files/etc/banner
