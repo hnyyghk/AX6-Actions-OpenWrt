@@ -72,7 +72,7 @@ jobs:
         $GITHUB_WORKSPACE/$DIY_P1_SH
 
     - name: Cache
-      uses: klever1988/cachewrtbuild@test
+      uses: hnyyghk/cachewrtbuild@main
       with:
         ccache: 'true'
         prefix: ${{ github.workspace }}/openwrt
