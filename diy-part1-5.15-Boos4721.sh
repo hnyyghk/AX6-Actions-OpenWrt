@@ -13,6 +13,10 @@
 # Uncomment a feed source
 #sed -i 's/^#\(.*helloworld\)/\1/' feeds.conf.default
 
+for i in "608-5.15-qca-nss-ssdk-delete-fdb-entry-using-netdev"; do \
+  svn export "https://github.com/Lstions/openwrt-boos/trunk/target/linux/ipq807x/patches-5.15/$i" "target/linux/ipq807x/patches-5.15/$i"; \
+done
+
 # Add a feed source
 echo 'src-git helloworld https://github.com/fw876/helloworld' >> feeds.conf.default
 #echo 'src-git passwall_packages https://github.com/xiaorouji/openwrt-passwall;packages' >> feeds.conf.default
