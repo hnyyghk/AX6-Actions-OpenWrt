@@ -92,6 +92,12 @@ jobs:
         chmod +x $DIY_P2_SH
         cd openwrt
         $GITHUB_WORKSPACE/$DIY_P2_SH "${{ env.REPO_URL }}/tree/${{ env.COMMIT_HASH }}?branch=${{ env.REPO_BRANCH }}&device=${{ env.TARGET_DEVICE }}" "${{ secrets.WIFI_SSID }}" "${{ secrets.WIFI_KEY }}"
+        echo -e 'CONFIG_DEVEL=y\nCONFIG_CCACHE=y' >> .config; make defconfig
+
+    - name: Cat config
+      run: |
+        cd openwrt
+        cat .config
 
     - name: SSH connection to Actions
       uses: P3TERX/ssh2actions@v1.0.0
@@ -104,7 +110,6 @@ jobs:
       id: package
       run: |
         cd openwrt
-        echo -e 'CONFIG_DEVEL=y\nCONFIG_CCACHE=y' >> .config; make defconfig
         make download -j8
         find dl -size -1024c -exec ls -l {} \;
         find dl -size -1024c -exec rm -f {} \;
