@@ -52,7 +52,8 @@ jobs:
         event-type: Source Code Update
 
     - name: Delete workflow runs
-      uses: GitRML/delete-workflow-runs@main
+      uses: Mattraks/delete-workflow-runs@v2
       with:
+        delete_workflow_pattern: ${{ github.workflow }}
         retain_days: 1
         keep_minimum_runs: 1
