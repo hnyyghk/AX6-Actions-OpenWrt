@@ -38,6 +38,133 @@ if [ -z "$WIFI_KEY" ]; then
     WIFI_KEY='Unknown'
 fi
 
+# fix certain modules require OpenSSL QUIC support, replace built-in OpenSSL to QuicTLS
+sed -i "/^PKG_SOURCE_URL:=/,/^PKG_HASH:=/s/.*//" package/libs/openssl/Makefile
+sed -i "/^PKG_SOURCE:=/cPKG_SOURCE_PROTO:=git\nPKG_SOURCE_URL:=https://github.com/quictls/openssl\nPKG_SOURCE_VERSION:=f105ac0bfdae1ce009b8fd86bc6d9f65e5576352\nPKG_MIRROR_HASH:=skip" package/libs/openssl/Makefile
+
+# nginx quic
+rm -rf feeds/packages/net/nginx
+rm -rf feeds/packages/net/nginx-util
+for i in "nginx" "nginx-util"; do \
+  svn checkout "https://github.com/hnyyghk/OpenWrt_Nginx-QUIC/trunk/net/$i" "feeds/packages/net/$i"; \
+done
+
+# lua-nginx-module 0.10.16
+#sed -i 's/VERSION:=28cf5ce3b6ec8e7ab44eadac9cc1c3b6f5c387ba/VERSION:=c2565fe799408c31bf445530a0e68c9bdb2de1fa/' feeds/packages/net/nginx/Makefile
+# lua-nginx-module 0.10.17
+#sed -i 's/VERSION:=28cf5ce3b6ec8e7ab44eadac9cc1c3b6f5c387ba/VERSION:=2d23bc4f0a29ed79aaaa754c11bffb1080aa44ba/' feeds/packages/net/nginx/Makefile
+# lua-nginx-module 0.10.18
+#sed -i 's/VERSION:=28cf5ce3b6ec8e7ab44eadac9cc1c3b6f5c387ba/VERSION:=15197e7bbae89ce1c726061d04211262322f2712/' feeds/packages/net/nginx/Makefile
+# lua-nginx-module 0.10.19
+#sed -i 's/VERSION:=28cf5ce3b6ec8e7ab44eadac9cc1c3b6f5c387ba/VERSION:=7105adaa523adedec80f0aaa13388b88d08988f8/' feeds/packages/net/nginx/Makefile
+# lua-nginx-module 0.10.20
+#sed -i 's/VERSION:=28cf5ce3b6ec8e7ab44eadac9cc1c3b6f5c387ba/VERSION:=7105adaa523adedec80f0aaa13388b88d08988f8/' feeds/packages/net/nginx/Makefile
+# lua-nginx-module 0.10.21
+#sed -i 's/VERSION:=28cf5ce3b6ec8e7ab44eadac9cc1c3b6f5c387ba/VERSION:=97d1b704d0d86b5370d57604a9e2e3f86e4a33ec/' feeds/packages/net/nginx/Makefile
+# lua-nginx-module 0.10.22
+#sed -i 's/VERSION:=28cf5ce3b6ec8e7ab44eadac9cc1c3b6f5c387ba/VERSION:=8d9032298ef542aef058fa02940a6ecd9cf25423/' feeds/packages/net/nginx/Makefile
+# lua-nginx-module master
+#sed -i 's/VERSION:=28cf5ce3b6ec8e7ab44eadac9cc1c3b6f5c387ba/VERSION:=3207da152a1cead67ade7b3d4234681f2c44ba77/' feeds/packages/net/nginx/Makefile
+
+# fix lua-nginx-module >= 0.10.14, start warning
+# detected a LuaJIT version which is not OpenResty's; many optimizations will be disabled and performance will be compromised (see https://github.com/openresty/luajit2 for OpenResty's LuaJIT or, even better, consider using the OpenResty releases from https://openresty.org/en/download.html)
+#sed -i "/^PKG_HASH:=/s/.*//" feeds/packages/lang/luajit/Makefile
+#sed -i '/^PKG_SOURCE_URL:=/cPKG_SOURCE_PROTO:=git\nPKG_SOURCE_URL:=https://github.com/openresty/luajit2\nPKG_SOURCE_VERSION:=8384278b14988390cf030b787537aa916a9709bb\nPKG_MIRROR_HASH:=skip' feeds/packages/lang/luajit/Makefile
+# fix 010-lua-path.patch can't find file to patch at input line 3
+#sed -i '/^PKG_SOURCE:=/cPKG_SOURCE_SUBDIR:=LuaJIT-$(PKG_VERSION)' feeds/packages/lang/luajit/Makefile
+# fix $(CP) $(PKG_INSTALL_DIR)/usr/bin/luajit-$(PKG_VERSION) $(PKG_INSTALL_DIR)/usr/bin/$(PKG_NAME) are the same file
+#sed -i "s/define Build\/Compile/&\n\tsed -i '137d' \$(PKG_BUILD_DIR)\/Makefile/" feeds/packages/lang/luajit/Makefile
+#cat feeds/packages/lang/luajit/Makefile
+# fix 030_fix_posix_install_with_missing_or_incompatible_ldconfig.patch Hunk #1 FAILED at 75 and Hunk #2 FAILED at 121, it is already patched
+#rm feeds/packages/lang/luajit/patches/030_fix_posix_install_with_missing_or_incompatible_ldconfig.patch
+#rm feeds/packages/lang/luajit/patches/040-softfloat-ppc.patch
+#rm feeds/packages/lang/luajit/patches/050-ppc-softfloat.patch
+#rm feeds/packages/lang/luajit/patches/060-ppc-musl.patch
+#rm feeds/packages/lang/luajit/patches/300-PPC-e500-with-SPE-enabled-use-soft-float.patch
+
+# fix lua-nginx-module >= 0.10.15, start warning
+# lua_load_resty_core failed to load the resty.core module from https://github.com/openresty/lua-resty-core; ensure you are using an OpenResty release from https://openresty.org/en/download.html (rc: 2, reason: module 'resty.core' not found:
+# 	no field package.preload['resty.core']
+# 	no file './resty/core.lua'
+# 	no file '/usr/share/luajit-2.1.0-beta3/resty/core.lua'
+# 	no file '/usr/share/lua/resty/core.lua'
+# 	no file '/usr/share/lua/resty/core/init.lua'
+# 	no file '/usr/share/lua/resty/core.lua'
+# 	no file '/usr/share/lua/resty/core/init.lua'
+# 	no file './resty/core.so'
+# 	no file '/usr/lib/lua/resty/core.so'
+# 	no file '/usr/lib/lua/resty/core.so'
+# 	no file '/usr/lib/lua/loadall.so'
+# 	no file './resty.so'
+# 	no file '/usr/lib/lua/resty.so'
+# 	no file '/usr/lib/lua/resty.so'
+# 	no file '/usr/lib/lua/loadall.so')
+# fix lua-nginx-module >= 0.10.16, start error
+# failed to load the 'resty.core' module (https://github.com/openresty/lua-resty-core); ensure you are using an OpenResty release from https://openresty.org/en/download.html (reason: module 'resty.core' not found:
+# 	no field package.preload['resty.core']
+# 	no file './resty/core.lua'
+# 	no file '/usr/share/luajit-2.1.0-beta3/resty/core.lua'
+# 	no file '/usr/share/lua/resty/core.lua'
+# 	no file '/usr/share/lua/resty/core/init.lua'
+# 	no file '/usr/share/lua/resty/core.lua'
+# 	no file '/usr/share/lua/resty/core/init.lua'
+# 	no file './resty/core.so'
+# 	no file '/usr/lib/lua/resty/core.so'
+# 	no file '/usr/lib/lua/resty/core.so'
+# 	no file '/usr/lib/lua/loadall.so'
+# 	no file './resty.so'
+# 	no file '/usr/lib/lua/resty.so'
+# 	no file '/usr/lib/lua/resty.so'
+# 	no file '/usr/lib/lua/loadall.so') in /etc/nginx/uci.conf:52
+# install lua-resty-core, required lua-resty-lrucache ngx_devel_kit
+#sed -i 's/$(PKG_UNPACK)/git clone https:\/\/github\.com\/openresty\/lua-resty-core \$(PKG_BUILD_DIR)\/lua-resty-core\n\t&/' feeds/packages/net/nginx/Makefile
+#sed -i "s/define Package\/nginx-ssl\/install/&\n\t\$(INSTALL_DIR) \$(1)\/etc\/nginx\/lib\/resty\/core\n\t\$(INSTALL_DIR) \$(1)\/etc\/nginx\/lib\/ngx\/ssl\n\t\$(CP) \$(PKG_BUILD_DIR)\/lua-resty-core\/lib\/resty\/\*\.lua \$(1)\/etc\/nginx\/lib\/resty\n\t\$(CP) \$(PKG_BUILD_DIR)\/lua-resty-core\/lib\/resty\/core\/\*\.lua \$(1)\/etc\/nginx\/lib\/resty\/core\n\t\$(CP) \$(PKG_BUILD_DIR)\/lua-resty-core\/lib\/ngx\/\*\.lua \$(1)\/etc\/nginx\/lib\/ngx\n\t\$(CP) \$(PKG_BUILD_DIR)\/lua-resty-core\/lib\/ngx\/ssl\/\*\.lua \$(1)\/etc\/nginx\/lib\/ngx\/ssl/" feeds/packages/net/nginx/Makefile
+# install lua-resty-lrucache
+#sed -i 's/$(PKG_UNPACK)/git clone https:\/\/github\.com\/openresty\/lua-resty-lrucache \$(PKG_BUILD_DIR)\/lua-resty-lrucache\n\t&/' feeds/packages/net/nginx/Makefile
+#sed -i "s/define Package\/nginx-ssl\/install/&\n\t\$(INSTALL_DIR) \$(1)\/etc\/nginx\/lib\/resty\/lrucache\n\t\$(CP) \$(PKG_BUILD_DIR)\/lua-resty-lrucache\/lib\/resty\/\*\.lua \$(1)\/etc\/nginx\/lib\/resty\n\t\$(CP) \$(PKG_BUILD_DIR)\/lua-resty-lrucache\/lib\/resty\/lrucache\/\*\.lua \$(1)\/etc\/nginx\/lib\/resty\/lrucache/" feeds/packages/net/nginx/Makefile
+# install ngx_devel_kit
+#sed -i 's/$(PKG_UNPACK)/git clone https:\/\/github\.com\/vision5\/ngx_devel_kit \$(PKG_BUILD_DIR)\/ngx_devel_kit\n\t&/' feeds/packages/net/nginx/Makefile
+#sed -i 's/with-cc-opt="/add-module=\$(PKG_BUILD_DIR)\/ngx_devel_kit --&/' feeds/packages/net/nginx/Makefile
+# add necessary `lua_package_path` directive to `nginx.conf`, in the http context
+#sed -i 's/http {/&\n\tlua_package_path "\/etc\/nginx\/lib\/?\.lua;;";\n/' feeds/packages/net/nginx-util/files/uci.conf.template
+
+# fix lua-nginx-module >= 0.10.15 after install lua-resty-core lua-resty-lrucache ngx_devel_kit and add lua_package_path, start warning
+# lua_load_resty_core failed to load the resty.core module from https://github.com/openresty/lua-resty-core; ensure you are using an OpenResty release from https://openresty.org/en/download.html (rc: 2, reason: /etc/nginx/lib/resty/core/time.lua:43: Symbol not found: ngx_http_lua_ffi_now)
+# fix lua-nginx-module >= 0.10.16 after install lua-resty-core lua-resty-lrucache ngx_devel_kit and add lua_package_path, start error
+# failed to load the 'resty.core' module (https://github.com/openresty/lua-resty-core); ensure you are using an OpenResty release from https://openresty.org/en/download.html (reason: /etc/nginx/lib/resty/core/var.lua:44: Symbol not found: ngx_http_lua_ffi_var_get) in /etc/nginx/uci.conf:54
+# todo
+
+# fix lua-nginx-module >= 0.10.16, compile error
+# 100-no_by_lua_block.patch Hunk #3 FAILED at 209
+#sed -i '38c\       (void *) ngx_http_lua_exit_worker_by_file },' feeds/packages/net/nginx/patches/lua-nginx/100-no_by_lua_block.patch
+#sed -i '42c\     /* set_by_lua_block $res { inline Lua code } */' feeds/packages/net/nginx/patches/lua-nginx/100-no_by_lua_block.patch
+
+# fix lua-nginx-module >= 0.10.21, compile error
+# 100-no_by_lua_block.patch Hunk #18 FAILED at 517
+#sed -i '180c\       NGX_HTTP_SRV_CONF_OFFSET,' feeds/packages/net/nginx/patches/lua-nginx/100-no_by_lua_block.patch
+#sed -i '181c\       0,' feeds/packages/net/nginx/patches/lua-nginx/100-no_by_lua_block.patch
+#sed -i '182c\       (void *) ngx_http_lua_ssl_client_hello_handler_file },' feeds/packages/net/nginx/patches/lua-nginx/100-no_by_lua_block.patch
+
+# fix dynamic modules .so file have the exact size of 4099
+#sed -i "s/include \$(TOPDIR)\/rules\.mk/&\nSTRIP:=:\nRSTRIP:=:/" feeds/packages/net/nginx/Makefile
+
+# add necessary `load_module` directive to `nginx.conf`, in the main context, before events context
+#sed -i 's/events {/load_module \/usr\/modules\/ngx_http_lua_module\.so;\n\n&/' feeds/packages/net/nginx-util/files/uci.conf.template
+
+# fix compile lua-nginx-module as dynamic module, start error
+# dlsym() "/usr/modules/ngx_http_lua_module.so", "ngx_modules" failed (Symbol not found: ngx_modules) in /etc/nginx/uci.conf:9
+# todo
+
+# lua-resty-core 0.1.24 required lua-nginx-module 0.10.22
+# lua-resty-core 0.1.23 required lua-nginx-module 0.10.21
+# lua-resty-core 0.1.22 required lua-nginx-module 0.10.19 or 0.10.20
+# lua-resty-core 0.1.21 required lua-nginx-module 0.10.18 or 0.10.19
+# lua-resty-core 0.1.20 required lua-nginx-module 0.10.18
+# lua-resty-core 0.1.19 required lua-nginx-module 0.10.16 or 0.10.17
+# lua-resty-core 0.1.18 required lua-nginx-module 0.10.16
+# lua-resty-core 0.1.17 required lua-nginx-module 0.10.15
+# lua-resty-core 0.1.16 required lua-nginx-module 0.10.14
+
 # Modify default timezone
 echo 'Modify default timezone...'
 sed -i "s/'UTC'/'CST-8'\n\t\tset system.@system[-1].zonename='Asia\/Shanghai'/" package/base-files/files/bin/config_generate
