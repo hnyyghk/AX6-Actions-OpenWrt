@@ -332,8 +332,11 @@ EOF
     uci set smartdns.cfg016bb1.dualstack_ip_selection='1'
     uci set smartdns.cfg016bb1.prefetch_domain='1'
     uci set smartdns.cfg016bb1.serve_expired='1'
-    uci set smartdns.cfg016bb1.redirect='dnsmasq-upstream'
     uci set smartdns.cfg016bb1.cache_size='16384'
+    uci set smartdns.cfg016bb1.resolve_local_hostnames='1'
+    uci set smartdns.cfg016bb1.auto_set_dnsmasq='1'
+    uci set smartdns.cfg016bb1.force_aaaa_soa='0'
+    uci set smartdns.cfg016bb1.force_https_soa='0'
     uci set smartdns.cfg016bb1.rr_ttl='30'
     uci set smartdns.cfg016bb1.rr_ttl_min='30'
     uci set smartdns.cfg016bb1.rr_ttl_max='300'
@@ -348,14 +351,8 @@ EOF
     uci set smartdns.cfg016bb1.seconddns_no_rule_soa='0'
     uci set smartdns.cfg016bb1.seconddns_no_dualstack_selection='1'
     uci set smartdns.cfg016bb1.seconddns_no_cache='1'
-    uci set smartdns.cfg016bb1.force_aaaa_soa='1'
+    uci set smartdns.cfg016bb1.seconddns_force_aaaa_soa='1'
     uci set smartdns.cfg016bb1.coredump='0'
-    uci del smartdns.cfg016bb1.old_redirect
-    uci add_list smartdns.cfg016bb1.old_redirect='dnsmasq-upstream'
-    uci del smartdns.cfg016bb1.old_port
-    uci add_list smartdns.cfg016bb1.old_port='6053'
-    uci del smartdns.cfg016bb1.old_enabled
-    uci add_list smartdns.cfg016bb1.old_enabled='1'
     uci commit smartdns
     touch /etc/smartdns/ad.conf
     cat >> /etc/smartdns/custom.conf << EOF
@@ -375,7 +372,6 @@ server-tls 223.6.6.6 -group china -group bootstrap #AlibabaDNS
 server-tls 2400:3200::1 -group china -group bootstrap #AlibabaDNS
 server-tls 2400:3200:baba::1 -group china -group bootstrap #AlibabaDNS
 server 180.76.76.76 -group china #BaiduDNS
-server 2400:da00::6666 -group china #BaiduDNS
 nameserver /cloudflare-dns.com/bootstrap
 nameserver /dns.google/bootstrap
 nameserver /doh.opendns.com/bootstrap
