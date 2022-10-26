@@ -49,9 +49,6 @@ sed -i 's/cn.pool.ntp.org/pool.ntp.org/g' package/base-files/files/bin/config_ge
 echo 'Modify default LAN IP...'
 sed -i 's/10.10.10.1/192.168.31.1/g' package/base-files/files/bin/config_generate
 
-# 修正连接数（by ベ七秒鱼ベ）
-sed -i 's/net.netfilter.nf_conntrack_max=65535/net.netfilter.nf_conntrack_max=165535/g' package/base-files/files/etc/sysctl.conf
-
 # 设置密码为password
 sed -i 's/root:$1$WplwC1t5$HBAtVXABp7XbvVjG4193B.:18753:0:99999:7:::/root:$1$V4UetPzk$CYXluq4wUazHjmCDBCqXF.:0:0:99999:7:::/g' package/base-files/files/etc/shadow
 

@@ -180,8 +180,15 @@ sed -i 's/3.openwrt.pool.ntp.org/pool.ntp.org/' package/base-files/files/bin/con
 echo 'Modify default LAN IP...'
 sed -i 's/192.168.1.1/192.168.31.1/' package/base-files/files/bin/config_generate
 
-# 修正连接数（by ベ七秒鱼ベ）
-sed -i '/customized in this file/a net.netfilter.nf_conntrack_max=165535' package/base-files/files/etc/sysctl.conf
+# sysctl -a
+# fix v2ray too many open files
+# fs.file-max = 41549
+# increase APR kernel parameters for arp ram full load
+# net.ipv4.neigh.default.gc_thresh1 = 128
+# net.ipv4.neigh.default.gc_thresh2 = 512
+# net.ipv4.neigh.default.gc_thresh3 = 1024
+# net.netfilter.nf_conntrack_max = 26112
+sed -i '/customized in this file/a fs.file-max=102400\nnet.ipv4.neigh.default.gc_thresh1=512\nnet.ipv4.neigh.default.gc_thresh2=2048\nnet.ipv4.neigh.default.gc_thresh3=4096\nnet.netfilter.nf_conntrack_max=65535' package/base-files/files/etc/sysctl.conf
 
 # 设置密码为password
 sed -i 's/root:::0:99999:7:::/root:$1$V4UetPzk$CYXluq4wUazHjmCDBCqXF.:0:0:99999:7:::/' package/base-files/files/etc/shadow

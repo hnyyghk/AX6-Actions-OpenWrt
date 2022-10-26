@@ -49,8 +49,15 @@ sed -i 's/ntp1.aliyun.com/ntp.aliyun.com/g' package/emortal/default-settings/fil
 echo 'Modify default LAN IP...'
 sed -i 's/192.168.1.1/192.168.31.1/g' package/base-files/files/bin/config_generate
 
-# 修正连接数（by ベ七秒鱼ベ）
-sed -i '/customized in this file/a net.netfilter.nf_conntrack_max=165535' package/base-files/files/etc/sysctl.conf
+# sysctl -a
+# fix v2ray too many open files
+# fs.file-max = 41549
+# increase APR kernel parameters for arp ram full load
+# net.ipv4.neigh.default.gc_thresh1 = 128
+# net.ipv4.neigh.default.gc_thresh2 = 512
+# net.ipv4.neigh.default.gc_thresh3 = 1024
+# net.netfilter.nf_conntrack_max = 26112
+sed -i '/customized in this file/a fs.file-max=102400\nnet.ipv4.neigh.default.gc_thresh1=512\nnet.ipv4.neigh.default.gc_thresh2=2048\nnet.ipv4.neigh.default.gc_thresh3=4096\nnet.netfilter.nf_conntrack_max=65535' package/base-files/files/etc/sysctl.conf
 
 # Ax6修改无线命名、加密方式及密码
 sed -i "s/radio\${devidx}.ssid=OpenWrt/radio0.ssid=${WIFI_SSID}\n\t\t\tset wireless.default_radio1.ssid=${WIFI_SSID}_2.4G/g" package/kernel/mac80211/files/lib/wifi/mac80211.sh
