@@ -49,6 +49,11 @@ for i in "nginx" "nginx-util"; do \
   svn checkout "https://github.com/hnyyghk/OpenWrt_Nginx-QUIC/trunk/net/$i" "feeds/packages/net/$i"; \
 done
 
+# add alter inbound api
+sed -i "/^PKG_SOURCE:=/s/.*//" feeds/packages/net/v2ray-core/Makefile
+sed -i "/^PKG_HASH:=/s/.*//" feeds/packages/net/v2ray-core/Makefile
+sed -i '/^PKG_SOURCE_URL:=/cPKG_SOURCE_PROTO:=git\nPKG_SOURCE_URL:=https://github.com/hnyyghk/v2ray-core\nPKG_SOURCE_VERSION:=51e865633eec7116fec8a5538dd2785db7221fa4\nPKG_MIRROR_HASH:=skip' feeds/packages/net/v2ray-core/Makefile
+
 # lua-nginx-module 0.10.16
 #sed -i 's/VERSION:=28cf5ce3b6ec8e7ab44eadac9cc1c3b6f5c387ba/VERSION:=c2565fe799408c31bf445530a0e68c9bdb2de1fa/' feeds/packages/net/nginx/Makefile
 # lua-nginx-module 0.10.17
