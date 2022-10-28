@@ -40,14 +40,14 @@ fi
 
 # Modify default NTP server
 echo 'Modify default NTP server...'
-sed -i 's/cn.ntp.org.cn/pool.ntp.org/g' package/emortal/default-settings/files/99-default-settings-chinese
-sed -i 's/ntp.ntsc.ac.cn/cn.ntp.org.cn/g' package/emortal/default-settings/files/99-default-settings-chinese
-sed -i 's/time1.cloud.tencent.com/ntp.ntsc.ac.cn/g' package/emortal/default-settings/files/99-default-settings-chinese
-sed -i 's/ntp1.aliyun.com/ntp.aliyun.com/g' package/emortal/default-settings/files/99-default-settings-chinese
+sed -i 's/cn.ntp.org.cn/pool.ntp.org/' package/emortal/default-settings/files/99-default-settings-chinese
+sed -i 's/ntp.ntsc.ac.cn/cn.ntp.org.cn/' package/emortal/default-settings/files/99-default-settings-chinese
+sed -i 's/time1.cloud.tencent.com/ntp.ntsc.ac.cn/' package/emortal/default-settings/files/99-default-settings-chinese
+sed -i 's/ntp1.aliyun.com/ntp.aliyun.com/' package/emortal/default-settings/files/99-default-settings-chinese
 
 # Modify default LAN ip
 echo 'Modify default LAN IP...'
-sed -i 's/192.168.1.1/192.168.31.1/g' package/base-files/files/bin/config_generate
+sed -i 's/192.168.1.1/192.168.31.1/' package/base-files/files/bin/config_generate
 
 # sysctl -a
 # fix v2ray too many open files
@@ -60,8 +60,8 @@ sed -i 's/192.168.1.1/192.168.31.1/g' package/base-files/files/bin/config_genera
 sed -i '/customized in this file/a fs.file-max=102400\nnet.ipv4.neigh.default.gc_thresh1=512\nnet.ipv4.neigh.default.gc_thresh2=2048\nnet.ipv4.neigh.default.gc_thresh3=4096\nnet.netfilter.nf_conntrack_max=65535' package/base-files/files/etc/sysctl.conf
 
 # Ax6修改无线命名、加密方式及密码
-sed -i "s/radio\${devidx}.ssid=OpenWrt/radio0.ssid=${WIFI_SSID}\n\t\t\tset wireless.default_radio1.ssid=${WIFI_SSID}_2.4G/g" package/kernel/mac80211/files/lib/wifi/mac80211.sh
-sed -i "s/radio\${devidx}.encryption=none/radio\${devidx}.encryption=psk-mixed\n\t\t\tset wireless.default_radio\${devidx}.key=${WIFI_KEY}/g" package/kernel/mac80211/files/lib/wifi/mac80211.sh
+sed -i "s/\${name}.ssid=ImmortalWrt/radio0.ssid=${WIFI_SSID}\n\t\t\tset wireless.default_radio1.ssid=${WIFI_SSID}_2.4G/" package/kernel/mac80211/files/lib/wifi/mac80211.sh
+sed -i "s/\${name}.encryption=none/\${name}.encryption=psk-mixed\n\t\t\tset wireless.default_\${name}.key=${WIFI_KEY}/" package/kernel/mac80211/files/lib/wifi/mac80211.sh
 
 # Modify default banner
 echo 'Modify default banner...'

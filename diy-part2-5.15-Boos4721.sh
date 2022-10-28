@@ -40,22 +40,22 @@ fi
 
 # Modify default NTP server
 echo 'Modify default NTP server...'
-sed -i 's/ntp.aliyun.com/ntp.ntsc.ac.cn/g' package/base-files/files/bin/config_generate
-sed -i 's/time1.cloud.tencent.com/ntp.aliyun.com/g' package/base-files/files/bin/config_generate
-sed -i 's/time.ustc.edu.cn/cn.ntp.org.cn/g' package/base-files/files/bin/config_generate
-sed -i 's/cn.pool.ntp.org/pool.ntp.org/g' package/base-files/files/bin/config_generate
+sed -i 's/ntp.aliyun.com/ntp.ntsc.ac.cn/' package/base-files/files/bin/config_generate
+sed -i 's/time1.cloud.tencent.com/ntp.aliyun.com/' package/base-files/files/bin/config_generate
+sed -i 's/time.ustc.edu.cn/cn.ntp.org.cn/' package/base-files/files/bin/config_generate
+sed -i 's/cn.pool.ntp.org/pool.ntp.org/' package/base-files/files/bin/config_generate
 
 # Modify default LAN ip
 echo 'Modify default LAN IP...'
-sed -i 's/10.10.10.1/192.168.31.1/g' package/base-files/files/bin/config_generate
+sed -i 's/10.10.10.1/192.168.31.1/' package/base-files/files/bin/config_generate
 
 # 设置密码为password
-sed -i 's/root:$1$WplwC1t5$HBAtVXABp7XbvVjG4193B.:18753:0:99999:7:::/root:$1$V4UetPzk$CYXluq4wUazHjmCDBCqXF.:0:0:99999:7:::/g' package/base-files/files/etc/shadow
+sed -i 's/root:$1$WplwC1t5$HBAtVXABp7XbvVjG4193B.:18753:0:99999:7:::/root:$1$V4UetPzk$CYXluq4wUazHjmCDBCqXF.:0:0:99999:7:::/' package/base-files/files/etc/shadow
 
 # Ax6修改无线命名、加密方式及密码
-sed -i "s/radio\${devidx}.ssid=OpenWrt/radio0.ssid=${WIFI_SSID}\n\t\t\tset wireless.default_radio1.ssid=${WIFI_SSID}_2.4G/g" package/kernel/mac80211/files/lib/wifi/mac80211.sh
-sed -i "s/radio\${devidx}.encryption=sae-mixed/radio\${devidx}.encryption=psk-mixed/g" package/kernel/mac80211/files/lib/wifi/mac80211.sh
-sed -i "s/radio\${devidx}.key=1234567890/radio\${devidx}.key=${WIFI_KEY}\n\t\t\tset wireless.default_radio\${devidx}.iw_qos_map_set=none/g" package/kernel/mac80211/files/lib/wifi/mac80211.sh
+sed -i "s/radio\${devidx}.ssid=OpenWrt/radio0.ssid=${WIFI_SSID}\n\t\t\tset wireless.default_radio1.ssid=${WIFI_SSID}_2.4G/" package/kernel/mac80211/files/lib/wifi/mac80211.sh
+sed -i "s/radio\${devidx}.encryption=sae-mixed/radio\${devidx}.encryption=psk-mixed/" package/kernel/mac80211/files/lib/wifi/mac80211.sh
+sed -i "s/radio\${devidx}.key=1234567890/radio\${devidx}.key=${WIFI_KEY}\n\t\t\tset wireless.default_radio\${devidx}.iw_qos_map_set=none/" package/kernel/mac80211/files/lib/wifi/mac80211.sh
 
 # Modify default banner
 echo 'Modify default banner...'
