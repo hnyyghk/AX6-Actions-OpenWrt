@@ -5,27 +5,26 @@
 # See /LICENSE for more information.
 #
 # https://github.com/P3TERX/Actions-OpenWrt
-# File: .github/workflows/update-checker.yml
+# File: .github/workflows/update-checker-robimarko.yml
 # Description: Source code update checker
 #
 
-name: Update Checker
+name: Update Checker robimarko
 
 env:
-  REPO_URL: https://github.com/coolsnowwolf/lede
-  REPO_BRANCH: master
+  REPO_URL: https://github.com/robimarko/openwrt
+  REPO_BRANCH: ipq807x-5.15-pr
 
 on:
   workflow_dispatch:
-#  schedule:
-#    - cron: 0 */18 * * *
+  schedule:
+    - cron: 0 0 * * *
 
 jobs:
   check:
     runs-on: ubuntu-latest
 
     steps:
-
     - name: Get Commit Hash
       id: getHash
       run: |
@@ -34,10 +33,10 @@ jobs:
 
     - name: Compare Commit Hash
       id: cacheHash
-      uses: actions/cache@v2
+      uses: actions/cache@v3
       with:
         path: .commitHash
-        key: HEAD-${{ steps.getHash.outputs.commitHash }}
+        key: ${{ env.REPO_URL }}/commit/${{ steps.getHash.outputs.commitHash }}
 
     - name: Save New Commit Hash
       if: steps.cacheHash.outputs.cache-hit != 'true'
@@ -46,10 +45,10 @@ jobs:
 
     - name: Trigger build
       if: steps.cacheHash.outputs.cache-hit != 'true'
-      uses: peter-evans/repository-dispatch@v1
+      uses: peter-evans/repository-dispatch@v2
       with:
-        token: ${{ secrets.ACTIONS_TRIGGER_PAT }}
-        event-type: Source Code Update
+        token: ${{ secrets.GITHUB_TOKEN }}
+        event-type: Source Code Update robimarko
 
     - name: Delete workflow runs
       uses: Mattraks/delete-workflow-runs@v2

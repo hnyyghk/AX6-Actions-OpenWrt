@@ -12,6 +12,7 @@ name: Build OpenWrt 5.15 imoutowrt
 
 on:
   repository_dispatch:
+    types: [Source Code Update imoutowrt]
   workflow_dispatch:
     inputs:
       ssh:

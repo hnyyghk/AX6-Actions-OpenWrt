@@ -12,6 +12,7 @@ name: Build OpenWrt 5.15 openwrt
 
 on:
   repository_dispatch:
+    types: [Source Code Update openwrt]
   workflow_dispatch:
     inputs:
       ssh:

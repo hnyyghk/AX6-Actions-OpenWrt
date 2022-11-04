@@ -12,6 +12,7 @@ name: Build OpenWrt 5.10 lede
 
 on:
   repository_dispatch:
+    types: [Source Code Update lede]
   workflow_dispatch:
     inputs:
       ssh:
