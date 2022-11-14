@@ -6,7 +6,7 @@
 # See /LICENSE for more information.
 #
 # https://github.com/P3TERX/Actions-OpenWrt
-# File name: diy-part2-5.15-robimarko.sh
+# File name: diy-part2-ax6-5.15-openwrt.sh
 # Description: OpenWrt DIY script part 2 (After Update feeds)
 #
 
@@ -198,7 +198,7 @@ sed -i '/customized in this file/a fs.file-max=102400\nnet.ipv4.neigh.default.gc
 # 设置密码为password
 sed -i 's/root:::0:99999:7:::/root:$1$V4UetPzk$CYXluq4wUazHjmCDBCqXF.:0:0:99999:7:::/' package/base-files/files/etc/shadow
 
-# Ax6修改无线国家代码、开关、命名、加密方式及密码
+# 修改无线国家代码、开关、命名、加密方式及密码
 sed -i 's/${name}.disabled=1/${name}.country=US\n\t\t\tset wireless.${name}.disabled=0/' package/kernel/mac80211/files/lib/wifi/mac80211.sh
 sed -i "s/\${name}.ssid=OpenWrt/radio0.ssid=${WIFI_SSID}\n\t\t\tset wireless.default_radio1.ssid=${WIFI_SSID}_2.4G/" package/kernel/mac80211/files/lib/wifi/mac80211.sh
 sed -i "s/\${name}.encryption=none/\${name}.encryption=psk-mixed\n\t\t\tset wireless.default_\${name}.key=${WIFI_KEY}\n\t\t\tset wireless.default_\${name}.iw_qos_map_set=none/" package/kernel/mac80211/files/lib/wifi/mac80211.sh
@@ -644,7 +644,7 @@ echo " ------------------------------------------------------------- " >> packag
 echo "      REPO_URL: $REPO_URL                                      " >> package/base-files/files/etc/banner
 echo "   REPO_BRANCH: $REPO_BRANCH                                   " >> package/base-files/files/etc/banner
 echo "   COMMIT_HASH: $COMMIT_HASH                                   " >> package/base-files/files/etc/banner
-echo "   DEVICE_NAME: $DEVICE_NAME                                 " >> package/base-files/files/etc/banner
+echo "   DEVICE_NAME: $DEVICE_NAME                                   " >> package/base-files/files/etc/banner
 echo " ------------------------------------------------------------- " >> package/base-files/files/etc/banner
 echo "                                                               " >> package/base-files/files/etc/banner
 
