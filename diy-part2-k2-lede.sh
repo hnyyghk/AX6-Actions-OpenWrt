@@ -171,6 +171,10 @@ cat feeds/helloworld/v2ray-core/Makefile
 # 11397KB 精简config -595KB
 # 8839KB 精简v2ray -2558KB
 # 7796KB 去除ppp opkg dropbear 精简内核 -1043KB
+# 7888KB 添加dropbear +92KB
+# 8179KB 添加wpad-mini +291KB / 8209KB 添加wpad-basic +321KB / 8224KB 添加wpad-basic-wolfssl +336KB / 8439KB 添加wpad +551KB / 8442KB 添加wpad-wolfssl +554KB
 
 # 5.4 kernel包精简记录
 # 7472KB 压缩v2ray 精简config 精简v2ray 去除ppp opkg dropbear 精简内核
+# 7555KB 添加dropbear +83KB
+# 7821KB 添加wpad-mini +266KB / 7849KB 添加wpad-basic +294KB / 7860KB 添加wpad-basic-wolfssl +305KB / 8060KB 添加wpad +505KB / 8060KB 添加wpad-wolfssl +505KB
