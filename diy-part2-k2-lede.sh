@@ -6,7 +6,7 @@
 # See /LICENSE for more information.
 #
 # https://github.com/P3TERX/Actions-OpenWrt
-# File name: diy-part2-k2-5.10-lede.sh
+# File name: diy-part2-k2-lede.sh
 # Description: OpenWrt DIY script part 2 (After Update feeds)
 #
 
@@ -162,10 +162,15 @@ endef
 EOF
 cat feeds/helloworld/v2ray-core/Makefile
 
-# 精简记录
+# k2固件大小限制 8060928B -> 7872KB -> 7.6875MB
+
+# 5.10 kernel包精简记录
 # 7119KB 无v2ray
-# 12664KB 直接加v2ray
-# 11992KB 压缩v2ray
-# 11397KB 精简openwrt
-# 8839KB 精简v2ray
-# 去除ppp opkg dropbear 精简内核
+# 12664KB 直接加v2ray +5545KB
+# 11992KB 压缩v2ray -672KB
+# 11397KB 精简config -595KB
+# 8839KB 精简v2ray -2558KB
+# 7796KB 去除ppp opkg dropbear 精简内核 -1043KB
+
+# 5.4 kernel包精简记录
+# 7472KB 压缩v2ray 精简config 精简v2ray 去除ppp opkg dropbear 精简内核
