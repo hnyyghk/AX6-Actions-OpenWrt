@@ -167,3 +167,5 @@ cat feeds/helloworld/v2ray-core/Makefile
 # 12664KB 直接加v2ray
 # 11992KB 压缩v2ray
 # 11397KB 精简openwrt
+# 8839KB 精简v2ray
+# 去除ppp opkg dropbear 精简内核
