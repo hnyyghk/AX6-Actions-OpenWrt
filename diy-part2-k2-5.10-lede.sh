@@ -88,9 +88,82 @@ sed -i "s/GO_PKG_LDFLAGS_X/GO_PKG_LDFLAGS:=-s -w\n&/" feeds/helloworld/v2ray-cor
 # Compress executable files with UPX
 sed -i 's/PKG_BUILD_DEPENDS:=/&upx\/host /' feeds/helloworld/v2ray-core/Makefile
 sed -i "s/define Package\/v2ray-core\/install/define Build\/Compile\n\t\$(call GoPackage\/Build\/Compile)\n\t\$(STAGING_DIR_HOST)\/bin\/upx --lzma --best \$(GO_PKG_BUILD_BIN_DIR)\/main\nendef\n\n&/" feeds/helloworld/v2ray-core/Makefile
+# 仅保留freedom vmess-inbound websocket模块
+sed -i '/$(eval $(call BuildPackage,v2ray-core))/d' feeds/helloworld/v2ray-core/Makefile
+sed -i '/$(eval $(call BuildPackage,v2ray-extra))/d' feeds/helloworld/v2ray-core/Makefile
+#${TAB}sed -i 's/_ "github.com\/v2fly\/v2ray-core\/v5\/proxy\/freedom"/\/\/&/' \$(PKG_BUILD_DIR)/main/distro/all/all.go
+#${TAB}sed -i 's/_ "github.com\/v2fly\/v2ray-core\/v5\/proxy\/vmess\/inbound"/\/\/&/' \$(PKG_BUILD_DIR)/main/distro/all/all.go
+#${TAB}sed -i 's/_ "github.com\/v2fly\/v2ray-core\/v5\/transport\/internet\/websocket"/\/\/&/' \$(PKG_BUILD_DIR)/main/distro/all/all.go
+# https://stackoverflow.com/questions/3731513/how-do-you-type-a-tab-in-a-bash-here-document
+TAB=$'\t'
+cat >> feeds/helloworld/v2ray-core/Makefile << EOF
+define Build/Prepare
+${TAB}\$(call Build/Prepare/Default)
+${TAB}sed -i 's/_ "github.com\/v2fly\/v2ray-core\/v5\/app\/commander"/\/\/&/' \$(PKG_BUILD_DIR)/main/distro/all/all.go
+${TAB}sed -i 's/_ "github.com\/v2fly\/v2ray-core\/v5\/app\/log\/command"/\/\/&/' \$(PKG_BUILD_DIR)/main/distro/all/all.go
+${TAB}sed -i 's/_ "github.com\/v2fly\/v2ray-core\/v5\/app\/proxyman\/command"/\/\/&/' \$(PKG_BUILD_DIR)/main/distro/all/all.go
+${TAB}sed -i 's/_ "github.com\/v2fly\/v2ray-core\/v5\/app\/stats\/command"/\/\/&/' \$(PKG_BUILD_DIR)/main/distro/all/all.go
+${TAB}sed -i 's/_ "github.com\/v2fly\/v2ray-core\/v5\/app\/instman\/command"/\/\/&/' \$(PKG_BUILD_DIR)/main/distro/all/all.go
+${TAB}sed -i 's/_ "github.com\/v2fly\/v2ray-core\/v5\/app\/observatory\/command"/\/\/&/' \$(PKG_BUILD_DIR)/main/distro/all/all.go
+${TAB}sed -i 's/_ "github.com\/v2fly\/v2ray-core\/v5\/app\/dns"/\/\/&/' \$(PKG_BUILD_DIR)/main/distro/all/all.go
+${TAB}sed -i 's/_ "github.com\/v2fly\/v2ray-core\/v5\/app\/dns\/fakedns"/\/\/&/' \$(PKG_BUILD_DIR)/main/distro/all/all.go
+${TAB}sed -i 's/_ "github.com\/v2fly\/v2ray-core\/v5\/app\/log"/\/\/&/' \$(PKG_BUILD_DIR)/main/distro/all/all.go
+${TAB}sed -i 's/_ "github.com\/v2fly\/v2ray-core\/v5\/app\/policy"/\/\/&/' \$(PKG_BUILD_DIR)/main/distro/all/all.go
+${TAB}sed -i 's/_ "github.com\/v2fly\/v2ray-core\/v5\/app\/reverse"/\/\/&/' \$(PKG_BUILD_DIR)/main/distro/all/all.go
+${TAB}sed -i 's/_ "github.com\/v2fly\/v2ray-core\/v5\/app\/router"/\/\/&/' \$(PKG_BUILD_DIR)/main/distro/all/all.go
+${TAB}sed -i 's/_ "github.com\/v2fly\/v2ray-core\/v5\/app\/stats"/\/\/&/' \$(PKG_BUILD_DIR)/main/distro/all/all.go
+${TAB}sed -i 's/_ "github.com\/v2fly\/v2ray-core\/v5\/transport\/internet\/tagged\/taggedimpl"/\/\/&/' \$(PKG_BUILD_DIR)/main/distro/all/all.go
+${TAB}sed -i 's/_ "github.com\/v2fly\/v2ray-core\/v5\/app\/instman"/\/\/&/' \$(PKG_BUILD_DIR)/main/distro/all/all.go
+${TAB}sed -i 's/_ "github.com\/v2fly\/v2ray-core\/v5\/app\/observatory"/\/\/&/' \$(PKG_BUILD_DIR)/main/distro/all/all.go
+${TAB}sed -i 's/_ "github.com\/v2fly\/v2ray-core\/v5\/app\/restfulapi"/\/\/&/' \$(PKG_BUILD_DIR)/main/distro/all/all.go
+${TAB}sed -i 's/_ "github.com\/v2fly\/v2ray-core\/v5\/proxy\/blackhole"/\/\/&/' \$(PKG_BUILD_DIR)/main/distro/all/all.go
+${TAB}sed -i 's/_ "github.com\/v2fly\/v2ray-core\/v5\/proxy\/dns"/\/\/&/' \$(PKG_BUILD_DIR)/main/distro/all/all.go
+${TAB}sed -i 's/_ "github.com\/v2fly\/v2ray-core\/v5\/proxy\/dokodemo"/\/\/&/' \$(PKG_BUILD_DIR)/main/distro/all/all.go
+${TAB}sed -i 's/_ "github.com\/v2fly\/v2ray-core\/v5\/proxy\/http"/\/\/&/' \$(PKG_BUILD_DIR)/main/distro/all/all.go
+${TAB}sed -i 's/_ "github.com\/v2fly\/v2ray-core\/v5\/proxy\/shadowsocks"/\/\/&/' \$(PKG_BUILD_DIR)/main/distro/all/all.go
+${TAB}sed -i 's/_ "github.com\/v2fly\/v2ray-core\/v5\/proxy\/socks"/\/\/&/' \$(PKG_BUILD_DIR)/main/distro/all/all.go
+${TAB}sed -i 's/_ "github.com\/v2fly\/v2ray-core\/v5\/proxy\/trojan"/\/\/&/' \$(PKG_BUILD_DIR)/main/distro/all/all.go
+${TAB}sed -i 's/_ "github.com\/v2fly\/v2ray-core\/v5\/proxy\/vless\/inbound"/\/\/&/' \$(PKG_BUILD_DIR)/main/distro/all/all.go
+${TAB}sed -i 's/_ "github.com\/v2fly\/v2ray-core\/v5\/proxy\/vless\/outbound"/\/\/&/' \$(PKG_BUILD_DIR)/main/distro/all/all.go
+${TAB}sed -i 's/_ "github.com\/v2fly\/v2ray-core\/v5\/proxy\/vmess\/outbound"/\/\/&/' \$(PKG_BUILD_DIR)/main/distro/all/all.go
+${TAB}sed -i 's/_ "github.com\/v2fly\/v2ray-core\/v5\/proxy\/vlite\/inbound"/\/\/&/' \$(PKG_BUILD_DIR)/main/distro/all/all.go
+${TAB}sed -i 's/_ "github.com\/v2fly\/v2ray-core\/v5\/proxy\/vlite\/outbound"/\/\/&/' \$(PKG_BUILD_DIR)/main/distro/all/all.go
+${TAB}sed -i 's/_ "github.com\/v2fly\/v2ray-core\/v5\/transport\/internet\/domainsocket"/\/\/&/' \$(PKG_BUILD_DIR)/main/distro/all/all.go
+${TAB}sed -i 's/_ "github.com\/v2fly\/v2ray-core\/v5\/transport\/internet\/grpc"/\/\/&/' \$(PKG_BUILD_DIR)/main/distro/all/all.go
+${TAB}sed -i 's/_ "github.com\/v2fly\/v2ray-core\/v5\/transport\/internet\/http"/\/\/&/' \$(PKG_BUILD_DIR)/main/distro/all/all.go
+${TAB}sed -i 's/_ "github.com\/v2fly\/v2ray-core\/v5\/transport\/internet\/kcp"/\/\/&/' \$(PKG_BUILD_DIR)/main/distro/all/all.go
+${TAB}sed -i 's/_ "github.com\/v2fly\/v2ray-core\/v5\/transport\/internet\/quic"/\/\/&/' \$(PKG_BUILD_DIR)/main/distro/all/all.go
+${TAB}sed -i 's/_ "github.com\/v2fly\/v2ray-core\/v5\/transport\/internet\/tcp"/\/\/&/' \$(PKG_BUILD_DIR)/main/distro/all/all.go
+${TAB}sed -i 's/_ "github.com\/v2fly\/v2ray-core\/v5\/transport\/internet\/tls"/\/\/&/' \$(PKG_BUILD_DIR)/main/distro/all/all.go
+${TAB}sed -i 's/_ "github.com\/v2fly\/v2ray-core\/v5\/transport\/internet\/udp"/\/\/&/' \$(PKG_BUILD_DIR)/main/distro/all/all.go
+${TAB}sed -i 's/_ "github.com\/v2fly\/v2ray-core\/v5\/transport\/internet\/headers\/http"/\/\/&/' \$(PKG_BUILD_DIR)/main/distro/all/all.go
+${TAB}sed -i 's/_ "github.com\/v2fly\/v2ray-core\/v5\/transport\/internet\/headers\/noop"/\/\/&/' \$(PKG_BUILD_DIR)/main/distro/all/all.go
+${TAB}sed -i 's/_ "github.com\/v2fly\/v2ray-core\/v5\/transport\/internet\/headers\/srtp"/\/\/&/' \$(PKG_BUILD_DIR)/main/distro/all/all.go
+${TAB}sed -i 's/_ "github.com\/v2fly\/v2ray-core\/v5\/transport\/internet\/headers\/tls"/\/\/&/' \$(PKG_BUILD_DIR)/main/distro/all/all.go
+${TAB}sed -i 's/_ "github.com\/v2fly\/v2ray-core\/v5\/transport\/internet\/headers\/utp"/\/\/&/' \$(PKG_BUILD_DIR)/main/distro/all/all.go
+${TAB}sed -i 's/_ "github.com\/v2fly\/v2ray-core\/v5\/transport\/internet\/headers\/wechat"/\/\/&/' \$(PKG_BUILD_DIR)/main/distro/all/all.go
+${TAB}sed -i 's/_ "github.com\/v2fly\/v2ray-core\/v5\/transport\/internet\/headers\/wireguard"/\/\/&/' \$(PKG_BUILD_DIR)/main/distro/all/all.go
+${TAB}sed -i 's/_ "github.com\/v2fly\/v2ray-core\/v5\/infra\/conf\/geodata\/memconservative"/\/\/&/' \$(PKG_BUILD_DIR)/main/distro/all/all.go
+${TAB}sed -i 's/_ "github.com\/v2fly\/v2ray-core\/v5\/infra\/conf\/geodata\/standard"/\/\/&/' \$(PKG_BUILD_DIR)/main/distro/all/all.go
+${TAB}sed -i 's/_ "github.com\/v2fly\/v2ray-core\/v5\/main\/formats"/\/\/&/' \$(PKG_BUILD_DIR)/main/distro/all/all.go
+${TAB}sed -i 's/_ "github.com\/v2fly\/v2ray-core\/v5\/main\/commands\/all"/\/\/&/' \$(PKG_BUILD_DIR)/main/distro/all/all.go
+${TAB}sed -i 's/_ "github.com\/v2fly\/v2ray-core\/v5\/main\/commands\/all\/engineering"/\/\/&/' \$(PKG_BUILD_DIR)/main/distro/all/all.go
+${TAB}sed -i 's/_ "github.com\/v2fly\/v2ray-core\/v5\/main\/commands\/all\/api\/jsonv4"/\/\/&/' \$(PKG_BUILD_DIR)/main/distro/all/all.go
+${TAB}sed -i 's/_ "github.com\/v2fly\/v2ray-core\/v5\/main\/commands\/all\/jsonv4"/\/\/&/' \$(PKG_BUILD_DIR)/main/distro/all/all.go
+${TAB}sed -i 's/_ "github.com\/v2fly\/v2ray-core\/v5\/infra\/conf\/v5cfg"/\/\/&/' \$(PKG_BUILD_DIR)/main/distro/all/all.go
+${TAB}sed -i 's/_ "github.com\/v2fly\/v2ray-core\/v5\/proxy\/http\/simplified"/\/\/&/' \$(PKG_BUILD_DIR)/main/distro/all/all.go
+${TAB}sed -i 's/_ "github.com\/v2fly\/v2ray-core\/v5\/proxy\/shadowsocks\/simplified"/\/\/&/' \$(PKG_BUILD_DIR)/main/distro/all/all.go
+${TAB}sed -i 's/_ "github.com\/v2fly\/v2ray-core\/v5\/proxy\/socks\/simplified"/\/\/&/' \$(PKG_BUILD_DIR)/main/distro/all/all.go
+${TAB}sed -i 's/_ "github.com\/v2fly\/v2ray-core\/v5\/proxy\/trojan\/simplified"/\/\/&/' \$(PKG_BUILD_DIR)/main/distro/all/all.go
+endef
+
+\$(eval \$(call BuildPackage,v2ray-core))
+\$(eval \$(call BuildPackage,v2ray-extra))
+EOF
 cat feeds/helloworld/v2ray-core/Makefile
 
 # 精简记录
 # 7119KB 无v2ray
 # 12664KB 直接加v2ray
 # 11992KB 压缩v2ray
+# 11397KB 精简openwrt
