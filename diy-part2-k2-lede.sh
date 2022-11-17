@@ -175,6 +175,7 @@ cat feeds/helloworld/v2ray-core/Makefile
 # 8179KB 添加wpad-mini +291KB / 8209KB 添加wpad-basic +321KB / 8224KB 添加wpad-basic-wolfssl +336KB / 8439KB 添加wpad +551KB / 8442KB 添加wpad-wolfssl +554KB
 # 8136KB 关闭kmod-mac80211的DebugFS支持, Minify Lua sources -43KB
 # 7963KB Compile the kernel with symbol table information, 关掉Global build settings中的Debug Filesystem, Remove ipkg/opkg status data files in final images -173KB
+# 7991KB 增加v2ray中log, 关闭mac80211的mesh支持 +28KB
 
 # 5.4 kernel包精简记录
 # 7472KB 压缩v2ray 精简config 精简v2ray 去除ppp opkg dropbear 精简内核
@@ -182,3 +183,63 @@ cat feeds/helloworld/v2ray-core/Makefile
 # 7821KB 添加wpad-mini +266KB / 7849KB 添加wpad-basic +294KB / 7860KB 添加wpad-basic-wolfssl +305KB / 8060KB 添加wpad +505KB / 8060KB 添加wpad-wolfssl +505KB
 # 7781KB 关闭kmod-mac80211的DebugFS支持, Minify Lua sources -40KB
 # 7612KB Compile the kernel with symbol table information, 关掉Global build settings中的Debug Filesystem, Remove ipkg/opkg status data files in final images -169KB
+# 7642KB 增加v2ray中log, 关闭mac80211的mesh支持 +30KB
+
+# 参考如下：
+# https://here2say.com/33/
+# https://syddos.com/719.html
+# https://xufooo.ml/2020/11/wnr2000v3-openwrt%E7%9A%84%E7%BC%96%E8%AF%91%E8%AE%B0%E5%BD%95/
+# https://blog.csdn.net/qq_21949217/article/details/41824367
+# https://github.com/yichya/yichya/blob/master/_posts/2016-05-27-openwrt-customize-2.md
+# 其他可能可以做的精简
+# 1、replace luci-mod-admin-full by luci-mod-admin-mini
+# 2、remove luci-proto-ppp
+# 3、remove 6in4 uclient-fetch CONFIG_PACKAGE_uclient-fetch=y
+# 4、Separate feed repositories CONFIG_PER_FEED_REPO=y
+
+<< COMMENT
+
+{
+  "log": {
+    "access": "none",
+    "error": "none",
+    "loglevel": "none"
+  },
+  "inbounds": [{
+    "port": 10002,
+    "tag": "vmess-ws",
+    "protocol": "vmess",
+    "settings": {
+      "clients": [{
+        "id": "49169b55-5dbf-54aa-903e-d1aa9767c1ed",
+        "level": 0,
+        "alterId": 0,
+        "email": "love@v2ray.com"
+      }]
+    },
+    "sniffing": {
+      "enabled": true,
+      "destOverride": ["http", "tls"]
+    },
+    "streamSettings": {
+      "network": "ws",
+      "wsSettings": {
+        "path": "/vmess"
+      }
+    }
+  }],
+  "outbounds": [{
+    "protocol": "freedom",
+    "settings": {},
+    "tag": "direct"
+  }]
+}
+
+裁剪后的v2ray已经不能直接读取config.json文件了，需要转换格式以供v2ray读取
+在PC客户端或者服务器上转换配置文件为protobuf格式，命令如下：
+v2ray convert -o=pb /etc/config.json > /etc/config.pb
+
+
+v2ray run -c=/etc/config.pb
+
+COMMENT
