@@ -88,9 +88,10 @@ sed -i "s/GO_PKG_LDFLAGS_X/GO_PKG_LDFLAGS:=-s -w\n&/" feeds/helloworld/v2ray-cor
 # Compress executable files with UPX
 sed -i 's/PKG_BUILD_DEPENDS:=/&upx\/host /' feeds/helloworld/v2ray-core/Makefile
 sed -i "s/define Package\/v2ray-core\/install/define Build\/Compile\n\t\$(call GoPackage\/Build\/Compile)\n\t\$(STAGING_DIR_HOST)\/bin\/upx --lzma --best \$(GO_PKG_BUILD_BIN_DIR)\/main\nendef\n\n&/" feeds/helloworld/v2ray-core/Makefile
-# 仅保留freedom vmess-inbound websocket模块
+# 仅保留log freedom vmess-inbound websocket模块
 sed -i '/$(eval $(call BuildPackage,v2ray-core))/d' feeds/helloworld/v2ray-core/Makefile
 sed -i '/$(eval $(call BuildPackage,v2ray-extra))/d' feeds/helloworld/v2ray-core/Makefile
+#${TAB}sed -i 's/_ "github.com\/v2fly\/v2ray-core\/v5\/app\/log"/\/\/&/' \$(PKG_BUILD_DIR)/main/distro/all/all.go
 #${TAB}sed -i 's/_ "github.com\/v2fly\/v2ray-core\/v5\/proxy\/freedom"/\/\/&/' \$(PKG_BUILD_DIR)/main/distro/all/all.go
 #${TAB}sed -i 's/_ "github.com\/v2fly\/v2ray-core\/v5\/proxy\/vmess\/inbound"/\/\/&/' \$(PKG_BUILD_DIR)/main/distro/all/all.go
 #${TAB}sed -i 's/_ "github.com\/v2fly\/v2ray-core\/v5\/transport\/internet\/websocket"/\/\/&/' \$(PKG_BUILD_DIR)/main/distro/all/all.go
@@ -107,7 +108,6 @@ ${TAB}sed -i 's/_ "github.com\/v2fly\/v2ray-core\/v5\/app\/instman\/command"/\/\
 ${TAB}sed -i 's/_ "github.com\/v2fly\/v2ray-core\/v5\/app\/observatory\/command"/\/\/&/' \$(PKG_BUILD_DIR)/main/distro/all/all.go
 ${TAB}sed -i 's/_ "github.com\/v2fly\/v2ray-core\/v5\/app\/dns"/\/\/&/' \$(PKG_BUILD_DIR)/main/distro/all/all.go
 ${TAB}sed -i 's/_ "github.com\/v2fly\/v2ray-core\/v5\/app\/dns\/fakedns"/\/\/&/' \$(PKG_BUILD_DIR)/main/distro/all/all.go
-${TAB}sed -i 's/_ "github.com\/v2fly\/v2ray-core\/v5\/app\/log"/\/\/&/' \$(PKG_BUILD_DIR)/main/distro/all/all.go
 ${TAB}sed -i 's/_ "github.com\/v2fly\/v2ray-core\/v5\/app\/policy"/\/\/&/' \$(PKG_BUILD_DIR)/main/distro/all/all.go
 ${TAB}sed -i 's/_ "github.com\/v2fly\/v2ray-core\/v5\/app\/reverse"/\/\/&/' \$(PKG_BUILD_DIR)/main/distro/all/all.go
 ${TAB}sed -i 's/_ "github.com\/v2fly\/v2ray-core\/v5\/app\/router"/\/\/&/' \$(PKG_BUILD_DIR)/main/distro/all/all.go
@@ -174,9 +174,11 @@ cat feeds/helloworld/v2ray-core/Makefile
 # 7888KB 添加dropbear +92KB
 # 8179KB 添加wpad-mini +291KB / 8209KB 添加wpad-basic +321KB / 8224KB 添加wpad-basic-wolfssl +336KB / 8439KB 添加wpad +551KB / 8442KB 添加wpad-wolfssl +554KB
 # 8136KB 关闭kmod-mac80211的DebugFS支持, Minify Lua sources -43KB
+# 7963KB Compile the kernel with symbol table information, 关掉Global build settings中的Debug Filesystem, Remove ipkg/opkg status data files in final images -173KB
 
 # 5.4 kernel包精简记录
 # 7472KB 压缩v2ray 精简config 精简v2ray 去除ppp opkg dropbear 精简内核
 # 7555KB 添加dropbear +83KB
 # 7821KB 添加wpad-mini +266KB / 7849KB 添加wpad-basic +294KB / 7860KB 添加wpad-basic-wolfssl +305KB / 8060KB 添加wpad +505KB / 8060KB 添加wpad-wolfssl +505KB
 # 7781KB 关闭kmod-mac80211的DebugFS支持, Minify Lua sources -40KB
+# 7612KB Compile the kernel with symbol table information, 关掉Global build settings中的Debug Filesystem, Remove ipkg/opkg status data files in final images -169KB
