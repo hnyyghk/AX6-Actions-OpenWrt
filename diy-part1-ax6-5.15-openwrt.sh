@@ -13,31 +13,6 @@
 # Uncomment a feed source
 #sed -i 's/^#\(.*helloworld\)/\1/' feeds.conf.default
 
-git config --global user.email "i@5icodes.com"
-git config --global user.name "hnyyghk"
-git reset --hard 0d2d52df69e91fe2f6e3e65750c0728fc45f5ab2
-echo "openwrt: before rm -rf *"
-ls -a
-# Retain .git
-rm -rf .gitattributes .github .gitignore BSDmakefile COPYING Config.in LICENSES Makefile README.md config feeds.conf.default include package rules.mk scripts target toolchain tools
-echo "openwrt: after rm -rf *"
-ls -a
-git clone https://github.com/robimarko/openwrt -b ipq807x-5.15-pr ../openwrt-temp
-echo "openwrt-temp: before rm -rf ../openwrt-temp/.git"
-ls -a ../openwrt-temp
-rm -rf ../openwrt-temp/.git
-echo "openwrt-temp: after rm -rf ../openwrt-temp/.git"
-ls -a ../openwrt-temp
-mv ../openwrt-temp/* ../openwrt-temp/.[^.]* ./
-echo "openwrt: after mv ../openwrt-temp/* ../openwrt-temp/.[^.]* ./"
-ls -a
-echo "openwrt-temp: after mv ../openwrt-temp/* ../openwrt-temp/.[^.]* ./"
-ls -a ../openwrt-temp
-git add -A
-git commit -m "temp"
-# fix rebase conflicts
-git pull --rebase -X theirs
-
 # Add a feed source
 echo 'src-git helloworld https://github.com/fw876/helloworld' >> feeds.conf.default
 #echo 'src-git passwall_packages https://github.com/xiaorouji/openwrt-passwall;packages' >> feeds.conf.default

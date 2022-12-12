@@ -25,7 +25,7 @@ env:
   REPO_BRANCH: ipq807x-5.15-pr
   FEEDS_CONF: feeds.conf.default
   CONFIG_FILE: .config
-  DIY_P1_SH: diy-part1-ax6-5.15-robimarko.sh
+  DIY_P1_SH: diy-part1-ax6-5.15-openwrt.sh
   DIY_P2_SH: diy-part2-ax6-5.15-openwrt.sh
   UPLOAD_BIN_DIR: false
   UPLOAD_FIRMWARE: true
