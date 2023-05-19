@@ -38,6 +38,9 @@ if [ -z "$WIFI_KEY" ]; then
     WIFI_KEY='Unknown'
 fi
 
+sed -i 's/KERNEL_PATCHVER:=5.10/KERNEL_PATCHVER:=5.4/g' target/linux/ramips/Makefile
+sed -i 's/KERNEL_TESTING_PATCHVER:=5.15/KERNEL_TESTING_PATCHVER:=5.10/g' target/linux/ramips/Makefile
+
 # Modify default NTP server
 echo 'Modify default NTP server...'
 sed -i 's/ntp.aliyun.com/ntp.ntsc.ac.cn/' package/base-files/files/bin/config_generate
