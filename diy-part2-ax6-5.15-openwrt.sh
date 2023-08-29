@@ -40,14 +40,14 @@ fi
 
 # fix certain modules require OpenSSL QUIC support, replace built-in OpenSSL to QuicTLS
 sed -i "/^PKG_SOURCE_URL:=/,/^PKG_HASH:=/s/.*//" package/libs/openssl/Makefile
-sed -i "/^PKG_SOURCE:=/cPKG_SOURCE_PROTO:=git\nPKG_SOURCE_URL:=https://github.com/quictls/openssl\nPKG_SOURCE_VERSION:=183e548d93a6aeedab0fd6cb737923a93f807b83\nPKG_MIRROR_HASH:=skip" package/libs/openssl/Makefile
+sed -i "/^PKG_SOURCE:=/cPKG_SOURCE_PROTO:=git\nPKG_SOURCE_URL:=https://github.com/quictls/openssl\nPKG_SOURCE_VERSION:=openssl-\$(PKG_VERSION)+quic\nPKG_MIRROR_HASH:=skip" package/libs/openssl/Makefile
 
 # nginx quic
-rm -rf feeds/packages/net/nginx
-rm -rf feeds/packages/net/nginx-util
-for i in "nginx" "nginx-util"; do \
-  svn checkout "https://github.com/hnyyghk/OpenWrt_Nginx-QUIC/trunk/net/$i" "feeds/packages/net/$i"; \
-done
+#rm -rf feeds/packages/net/nginx
+#rm -rf feeds/packages/net/nginx-util
+#for i in "nginx" "nginx-util"; do \
+#  svn checkout "https://github.com/hnyyghk/OpenWrt_Nginx-QUIC/trunk/net/$i" "feeds/packages/net/$i"; \
+#done
 
 # add alter inbound api
 #sed -i "/^PKG_SOURCE:=/s/.*//" feeds/packages/net/v2ray-core/Makefile
