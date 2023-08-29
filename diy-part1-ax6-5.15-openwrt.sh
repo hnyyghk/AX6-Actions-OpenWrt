@@ -22,11 +22,6 @@ echo 'src-git kenzo https://github.com/kenzok8/openwrt-packages' >> feeds.conf.d
 #echo 'src-git Boos https://github.com/Boos4721/OpenWrt-Packages' >> feeds.conf.default
 echo 'src-link custom /workdir/openwrt/custom-feed' >> feeds.conf.default
 
-mkdir -p package/helloworld
-for i in "dns2socks" "microsocks" "ipt2socks" "redsocks2"; do \
-  svn checkout "https://github.com/immortalwrt/packages/trunk/net/$i" "package/helloworld/$i"; \
-done
-
 mkdir custom-feed
 
 for i in "luci.mk"; do \
