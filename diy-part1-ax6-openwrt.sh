@@ -22,25 +22,21 @@ echo 'src-git kenzo https://github.com/kenzok8/openwrt-packages' >> feeds.conf.d
 #echo 'src-git Boos https://github.com/Boos4721/OpenWrt-Packages' >> feeds.conf.default
 echo 'src-link custom /workdir/openwrt/custom-feed' >> feeds.conf.default
 
-mkdir custom-feed
-
-#for i in "luci.mk"; do \
-#  svn export "https://github.com/coolsnowwolf/luci/trunk/$i" "custom-feed/$i"; \
-#done
-
-mkdir custom-feed/applications
+mkdir -p custom-feed/applications
 
 for i in "ipv6-helper"; do \
   svn checkout "https://github.com/coolsnowwolf/lede/trunk/package/lean/$i" "custom-feed/applications/$i"; \
 done
 
-#for i in "luci-app-vlmcsd"; do \
-#  svn checkout "https://github.com/coolsnowwolf/luci/trunk/applications/$i" "custom-feed/applications/$i"; \
-#done
+for i in "luci-app-vlmcsd"; do \
+  svn checkout "https://github.com/coolsnowwolf/luci/trunk/applications/$i" "custom-feed/applications/$i"; \
+done
+#$(find ./ -type f -name "Makefile")
+sed -i 's/include ..\/..\/luci.mk/include $(TOPDIR)\/feeds\/luci\/luci.mk/' custom-feed/applications/luci-app-vlmcsd/Makefile
 
-#for i in "vlmcsd"; do \
-#  svn checkout "https://github.com/coolsnowwolf/packages/trunk/net/$i" "custom-feed/applications/$i"; \
-#done
+for i in "vlmcsd"; do \
+  svn checkout "https://github.com/coolsnowwolf/packages/trunk/net/$i" "custom-feed/applications/$i"; \
+done
 
 for i in "luci-app-autoreboot"; do \
   svn checkout "https://github.com/kenzok8/small-package/trunk/$i" "custom-feed/applications/$i"; \
