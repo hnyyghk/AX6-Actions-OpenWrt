@@ -8,11 +8,11 @@
 # Description: Build OpenWrt using GitHub Actions
 #
 
-name: ax6-5.15-robimarko
+name: ax6-6.1-openwrt
 
 on:
   repository_dispatch:
-    types: [Source Code Update robimarko]
+    types: [Source Code Update openwrt]
   workflow_dispatch:
     inputs:
       ssh:
@@ -21,12 +21,12 @@ on:
         default: 'false'
 
 env:
-  REPO_URL: https://github.com/robimarko/openwrt
-  REPO_BRANCH: ipq807x-5.15-pr
+  REPO_URL: https://github.com/openwrt/openwrt
+  REPO_BRANCH: master
   FEEDS_CONF: feeds.conf.default
   CONFIG_FILE: .config
-  DIY_P1_SH: diy-part1-ax6-5.15-openwrt.sh
-  DIY_P2_SH: diy-part2-ax6-5.15-openwrt.sh
+  DIY_P1_SH: diy-part1-ax6-openwrt.sh
+  DIY_P2_SH: diy-part2-ax6-openwrt.sh
   UPLOAD_BIN_DIR: false
   UPLOAD_FIRMWARE: true
   UPLOAD_COWTRANSFER: false
@@ -120,7 +120,7 @@ jobs:
       run: |
         cd openwrt
         echo -e "$(nproc) thread compile"
-        make -j$(nproc) || make -j1 || make -j1 V=s
+        make -j1 V=s
         echo "status=success" >> $GITHUB_OUTPUT
         echo "FILE_DATE=_$(date +"%Y%m%d%H%M")" >> $GITHUB_ENV
 

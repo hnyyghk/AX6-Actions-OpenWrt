@@ -6,7 +6,7 @@
 # See /LICENSE for more information.
 #
 # https://github.com/P3TERX/Actions-OpenWrt
-# File name: diy-part2-imoutowrt.sh
+# File name: diy-part2-immortalwrt.sh
 # Description: OpenWrt DIY script part 2 (After Update feeds)
 #
 

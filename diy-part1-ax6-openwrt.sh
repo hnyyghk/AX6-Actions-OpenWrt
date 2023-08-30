@@ -6,7 +6,7 @@
 # See /LICENSE for more information.
 #
 # https://github.com/P3TERX/Actions-OpenWrt
-# File name: diy-part1-ax6-5.15-openwrt.sh
+# File name: diy-part1-ax6-openwrt.sh
 # Description: OpenWrt DIY script part 1 (Before Update feeds)
 #
 

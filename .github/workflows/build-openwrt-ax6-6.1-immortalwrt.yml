@@ -8,11 +8,11 @@
 # Description: Build OpenWrt using GitHub Actions
 #
 
-name: ax6-5.15-imoutowrt
+name: ax6-6.1-immortalwrt
 
 on:
   repository_dispatch:
-    types: [Source Code Update imoutowrt]
+    types: [Source Code Update immortalwrt]
   workflow_dispatch:
     inputs:
       ssh:
@@ -21,12 +21,12 @@ on:
         default: 'false'
 
 env:
-  REPO_URL: https://github.com/1715173329/imoutowrt
-  REPO_BRANCH: master-ax3000-5.15
+  REPO_URL: https://github.com/immortalwrt/immortalwrt
+  REPO_BRANCH: master
   FEEDS_CONF: feeds.conf.default
   CONFIG_FILE: .config
   DIY_P1_SH: diy-part1.sh
-  DIY_P2_SH: diy-part2-imoutowrt.sh
+  DIY_P2_SH: diy-part2-immortalwrt.sh
   UPLOAD_BIN_DIR: false
   UPLOAD_FIRMWARE: true
   UPLOAD_COWTRANSFER: false

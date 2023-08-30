@@ -5,15 +5,15 @@
 # See /LICENSE for more information.
 #
 # https://github.com/P3TERX/Actions-OpenWrt
-# File: .github/workflows/update-checker-robimarko.yml
+# File: .github/workflows/update-checker-immortalwrt.yml
 # Description: Source code update checker
 #
 
-name: Update Checker robimarko
+name: Update Checker immortalwrt
 
 env:
-  REPO_URL: https://github.com/robimarko/openwrt
-  REPO_BRANCH: ipq807x-5.15-pr
+  REPO_URL: https://github.com/immortalwrt/immortalwrt
+  REPO_BRANCH: master
 
 on:
   workflow_dispatch:
@@ -48,7 +48,7 @@ jobs:
       uses: peter-evans/repository-dispatch@v2
       with:
         token: ${{ secrets.GITHUB_TOKEN }}
-        event-type: Source Code Update robimarko
+        event-type: Source Code Update immortalwrt
 
     - name: Delete workflow runs
       uses: Mattraks/delete-workflow-runs@v2
