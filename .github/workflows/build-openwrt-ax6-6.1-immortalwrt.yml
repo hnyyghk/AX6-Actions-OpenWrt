@@ -190,6 +190,7 @@ jobs:
 
     - name: Delete workflow runs
       uses: Mattraks/delete-workflow-runs@v2
+      if: (!cancelled())
       with:
         delete_workflow_pattern: ${{ github.workflow }}
         retain_days: 1
