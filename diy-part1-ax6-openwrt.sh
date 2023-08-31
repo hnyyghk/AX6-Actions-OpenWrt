@@ -38,11 +38,8 @@ done
 #done
 
 for i in "luci-app-vlmcsd" "openwrt-vlmcsd"; do \
-  svn checkout "https://github.com/openwrt-develop/$i/trunk" "custom-feed/applications/$i"; \
+  svn checkout "https://github.com/siwind/$i/trunk" "custom-feed/applications/$i"; \
 done
-
-#https://github.com/siwind/luci-app-vlmcsd
-#https://github.com/siwind/openwrt-vlmcsd
 
 for i in "luci-app-autoreboot"; do \
   svn checkout "https://github.com/kenzok8/small-package/trunk/$i" "custom-feed/applications/$i"; \
