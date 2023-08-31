@@ -37,17 +37,9 @@ done
 #  svn checkout "https://github.com/coolsnowwolf/packages/trunk/net/$i" "custom-feed/applications/$i"; \
 #done
 
-#for i in "luci-app-vlmcsd" "openwrt-vlmcsd"; do \
-#  svn checkout "https://github.com/cokebar/$i/trunk" "custom-feed/applications/$i"; \
-#done
-
-#https://github.com/ssuperh/luci-app-vlmcsd-new
 for i in "luci-app-vlmcsd" "openwrt-vlmcsd"; do \
-  svn checkout "https://github.com/flytosky-f/$i/trunk" "custom-feed/applications/$i"; \
+  svn checkout "https://github.com/openwrt-develop/$i/trunk" "custom-feed/applications/$i"; \
 done
-
-#https://github.com/openwrt-develop/luci-app-vlmcsd
-#https://github.com/openwrt-develop/openwrt-vlmcsd
 
 #https://github.com/siwind/luci-app-vlmcsd
 #https://github.com/siwind/openwrt-vlmcsd
