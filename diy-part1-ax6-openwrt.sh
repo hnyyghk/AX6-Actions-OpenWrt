@@ -28,15 +28,28 @@ for i in "ipv6-helper"; do \
   svn checkout "https://github.com/coolsnowwolf/lede/trunk/package/lean/$i" "custom-feed/applications/$i"; \
 done
 
-for i in "luci-app-vlmcsd"; do \
-  svn checkout "https://github.com/coolsnowwolf/luci/trunk/applications/$i" "custom-feed/applications/$i"; \
-done
-#$(find ./ -type f -name "Makefile")
-sed -i 's/include ..\/..\/luci.mk/include $(TOPDIR)\/feeds\/luci\/luci.mk/' custom-feed/applications/luci-app-vlmcsd/Makefile
+#for i in "luci-app-vlmcsd"; do \
+#  svn checkout "https://github.com/coolsnowwolf/luci/trunk/applications/$i" "custom-feed/applications/$i"; \
+#done
+#sed -i 's/include ..\/..\/luci.mk/include $(TOPDIR)\/feeds\/luci\/luci.mk/' custom-feed/applications/luci-app-vlmcsd/Makefile
 
-for i in "vlmcsd"; do \
-  svn checkout "https://github.com/coolsnowwolf/packages/trunk/net/$i" "custom-feed/applications/$i"; \
+#for i in "vlmcsd"; do \
+#  svn checkout "https://github.com/coolsnowwolf/packages/trunk/net/$i" "custom-feed/applications/$i"; \
+#done
+
+for i in "luci-app-vlmcsd" "openwrt-vlmcsd"; do \
+  svn checkout "https://github.com/cokebar/$i" "custom-feed/applications/$i"; \
 done
+
+#https://github.com/ssuperh/luci-app-vlmcsd-new
+#https://github.com/flytosky-f/luci-app-vlmcsd
+#https://github.com/flytosky-f/openwrt-vlmcsd
+
+#https://github.com/openwrt-develop/luci-app-vlmcsd
+#https://github.com/openwrt-develop/openwrt-vlmcsd
+
+#https://github.com/siwind/luci-app-vlmcsd
+#https://github.com/siwind/openwrt-vlmcsd
 
 for i in "luci-app-autoreboot"; do \
   svn checkout "https://github.com/kenzok8/small-package/trunk/$i" "custom-feed/applications/$i"; \
