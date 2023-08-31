@@ -38,7 +38,7 @@ done
 #done
 
 for i in "luci-app-vlmcsd" "openwrt-vlmcsd"; do \
-  svn checkout "https://github.com/cokebar/$i" "custom-feed/applications/$i"; \
+  svn checkout "https://github.com/cokebar/$i/trunk" "custom-feed/applications/$i"; \
 done
 
 #https://github.com/ssuperh/luci-app-vlmcsd-new
