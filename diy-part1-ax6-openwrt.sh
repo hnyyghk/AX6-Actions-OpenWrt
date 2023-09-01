@@ -36,12 +36,6 @@ sed -i 's/include ..\/..\/luci.mk/include $(TOPDIR)\/feeds\/luci\/luci.mk/' cust
 for i in "vlmcsd"; do \
   svn checkout "https://github.com/coolsnowwolf/packages/trunk/net/$i" "custom-feed/applications/$i"; \
 done
-sed -i "/^PKG_SOURCE_URL:=/,/^PKG_HASH:=/s/.*//" custom-feed/applications/vlmcsd/Makefile
-sed -i "/^PKG_SOURCE:=/cPKG_SOURCE_PROTO:=git\nPKG_SOURCE_URL:=https://github.com/hnyyghk/vlmcsd\nPKG_SOURCE_VERSION:=master\nPKG_MIRROR_HASH:=skip" custom-feed/applications/vlmcsd/Makefile
-
-#for i in "luci-app-vlmcsd" "openwrt-vlmcsd"; do \
-#  svn checkout "https://github.com/siwind/$i/trunk" "custom-feed/applications/$i"; \
-#done
 
 for i in "luci-app-autoreboot"; do \
   svn checkout "https://github.com/kenzok8/small-package/trunk/$i" "custom-feed/applications/$i"; \

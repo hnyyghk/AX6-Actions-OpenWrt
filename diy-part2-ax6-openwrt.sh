@@ -201,7 +201,7 @@ sed -i 's/root:::0:99999:7:::/root:$1$V4UetPzk$CYXluq4wUazHjmCDBCqXF.:0:0:99999:
 # 修改无线国家代码、开关、命名、加密方式及密码
 sed -i 's/${name}.disabled=1/${name}.country=US\n\t\t\tset wireless.${name}.disabled=0/' package/kernel/mac80211/files/lib/wifi/mac80211.sh
 sed -i "s/\${name}.ssid=OpenWrt/radio0.ssid=${WIFI_SSID}\n\t\t\tset wireless.default_radio1.ssid=${WIFI_SSID}_2.4G/" package/kernel/mac80211/files/lib/wifi/mac80211.sh
-sed -i "s/\${name}.encryption=none/\${name}.encryption=psk-mixed\n\t\t\tset wireless.default_\${name}.key=${WIFI_KEY}\n\t\t\tset wireless.default_\${name}.iw_qos_map_set=none/" package/kernel/mac80211/files/lib/wifi/mac80211.sh
+sed -i "s/\${name}.encryption=none/\${name}.encryption=psk-mixed\n\t\t\tset wireless.default_\${name}.key=${WIFI_KEY}/" package/kernel/mac80211/files/lib/wifi/mac80211.sh
 
 # hijack dns queries to adguardhome(firewall)
 sed -i '/REDIRECT --to-ports 53/d' package/network/config/firewall/files/firewall.user
@@ -481,27 +481,30 @@ EOF
     sed -i 's/- 223.5.5.5/- 127.0.0.1/' /etc/AdGuardHome.yaml
     sed -i '/- 119.29.29.29/d' /etc/AdGuardHome.yaml
     sed -i 's/cache_size: 4194304/cache_size: 0/' /etc/AdGuardHome.yaml
+    sed -i 's/port: 5553/port: 1745/' /etc/AdGuardHome.yaml
     uci set AdGuardHome.AdGuardHome.enabled='1'
     uci commit AdGuardHome
     /etc/init.d/AdGuardHome restart >> /etc/custom.tag 2>&1
     echo "AdGuardHome finish" >> /etc/custom.tag
 
-    uci set network.wan.proto='pppoe'
-    uci set network.wan.username="\${PPPOE_USERNAME}"
-    uci set network.wan.password="\${PPPOE_PASSWORD}"
-    uci set network.wan.ipv6='auto'
-    uci set network.wan.peerdns='0'
-    uci add_list network.wan.dns='127.0.0.1'
-    uci set network.modem=interface
-    uci set network.modem.proto='dhcp'
-    uci set network.modem.device='eth0'
-    uci set network.modem.defaultroute='0'
-    uci set network.modem.peerdns='0'
-    uci set network.modem.delegate='0'
-    uci commit network
-    /etc/init.d/network restart >> /etc/custom.tag 2>&1
-    echo "network finish" >> /etc/custom.tag
+    #uci set network.wan.proto='pppoe'
+    #uci set network.wan.username="\${PPPOE_USERNAME}"
+    #uci set network.wan.password="\${PPPOE_PASSWORD}"
+    #uci set network.wan.ipv6='auto'
+    #uci set network.wan.peerdns='0'
+    #uci add_list network.wan.dns='127.0.0.1'
+    #uci set network.modem=interface
+    #uci set network.modem.proto='dhcp'
+    #uci set network.modem.device='eth0'
+    #uci set network.modem.defaultroute='0'
+    #uci set network.modem.peerdns='0'
+    #uci set network.modem.delegate='0'
+    #uci commit network
+    #/etc/init.d/network restart >> /etc/custom.tag 2>&1
+    #echo "network finish" >> /etc/custom.tag
 
+    #uci add_list firewall.cfg03dc81.network='modem'
+    #uci commit firewall
     # hijack dns queries to adguardhome(firewall4)
     # 把局域网内所有客户端对外ipv4和ipv6的53端口查询请求，都劫持指向adguardhome(nft list chain inet fw4 dns-redirect)(nft delete chain inet fw4 dns-redirect)
     cat >> /etc/nftables.d/10-custom-filter-chains.nft << EOF
@@ -512,8 +515,6 @@ chain dns-redirect {
 }
 
 EOF
-    uci add_list firewall.cfg03dc81.network='modem'
-    uci commit firewall
     /etc/init.d/firewall restart >> /etc/custom.tag 2>&1
     echo "firewall finish" >> /etc/custom.tag
 
@@ -543,8 +544,8 @@ EOF
     uci set ddns.test.username="\${DDNS_USERNAME}"
     uci set ddns.test.password="\${DDNS_PASSWORD}"
     uci set ddns.test.ip_source='network'
-    uci set ddns.test.ip_network='wan_6'
-    uci set ddns.test.interface='wan_6'
+    uci set ddns.test.ip_network='wan6'
+    uci set ddns.test.interface='wan6'
     uci set ddns.test.use_syslog='2'
     uci set ddns.test.check_unit='minutes'
     uci set ddns.test.force_unit='minutes'
@@ -687,7 +688,6 @@ echo "                                                               " >> packag
 #}
 
 # 移除重复软件包
-rm -rf feeds/packages/net/xray-core
 rm -rf feeds/packages/net/adguardhome
 
 ./scripts/feeds update -a

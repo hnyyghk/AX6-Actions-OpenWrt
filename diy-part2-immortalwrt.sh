@@ -42,7 +42,7 @@ fi
 echo 'Modify default NTP server...'
 sed -i 's/cn.ntp.org.cn/pool.ntp.org/' package/emortal/default-settings/files/99-default-settings-chinese
 sed -i 's/ntp.ntsc.ac.cn/cn.ntp.org.cn/' package/emortal/default-settings/files/99-default-settings-chinese
-sed -i 's/time1.cloud.tencent.com/ntp.ntsc.ac.cn/' package/emortal/default-settings/files/99-default-settings-chinese
+sed -i 's/ntp.tencent.com/ntp.ntsc.ac.cn/' package/emortal/default-settings/files/99-default-settings-chinese
 sed -i 's/ntp1.aliyun.com/ntp.aliyun.com/' package/emortal/default-settings/files/99-default-settings-chinese
 
 # Modify default LAN ip

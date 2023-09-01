@@ -61,7 +61,7 @@ sed -i '/customized in this file/a fs.file-max=102400\nnet.ipv4.neigh.default.gc
 
 # 修改无线命名、加密方式及密码
 sed -i "s/radio\${devidx}.ssid=OpenWrt/radio0.ssid=${WIFI_SSID}\n\t\t\tset wireless.default_radio1.ssid=${WIFI_SSID}_2.4G/" package/kernel/mac80211/files/lib/wifi/mac80211.sh
-sed -i "s/radio\${devidx}.encryption=none/radio\${devidx}.encryption=psk-mixed\n\t\t\tset wireless.default_radio\${devidx}.key=${WIFI_KEY}\n\t\t\tset wireless.default_radio\${devidx}.iw_qos_map_set=none/" package/kernel/mac80211/files/lib/wifi/mac80211.sh
+sed -i "s/radio\${devidx}.encryption=none/radio\${devidx}.encryption=psk-mixed\n\t\t\tset wireless.default_radio\${devidx}.key=${WIFI_KEY}/" package/kernel/mac80211/files/lib/wifi/mac80211.sh
 
 # Modify default banner
 echo 'Modify default banner...'
