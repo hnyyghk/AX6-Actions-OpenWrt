@@ -28,14 +28,15 @@ for i in "ipv6-helper"; do \
   svn checkout "https://github.com/coolsnowwolf/lede/trunk/package/lean/$i" "custom-feed/applications/$i"; \
 done
 
-#for i in "luci-app-vlmcsd"; do \
-#  svn checkout "https://github.com/coolsnowwolf/luci/trunk/applications/$i" "custom-feed/applications/$i"; \
-#done
-#sed -i 's/include ..\/..\/luci.mk/include $(TOPDIR)\/feeds\/luci\/luci.mk/' custom-feed/applications/luci-app-vlmcsd/Makefile
+for i in "luci-app-vlmcsd"; do \
+  svn checkout "https://github.com/coolsnowwolf/luci/trunk/applications/$i" "custom-feed/applications/$i"; \
+done
+sed -i 's/include ..\/..\/luci.mk/include $(TOPDIR)\/feeds\/luci\/luci.mk/' custom-feed/applications/luci-app-vlmcsd/Makefile
 
-#for i in "vlmcsd"; do \
-#  svn checkout "https://github.com/coolsnowwolf/packages/trunk/net/$i" "custom-feed/applications/$i"; \
-#done
+for i in "vlmcsd"; do \
+  svn checkout "https://github.com/coolsnowwolf/packages/trunk/net/$i" "custom-feed/applications/$i"; \
+done
+sed -i "/^PKG_SOURCE:=/cPKG_SOURCE_PROTO:=git\nPKG_SOURCE_URL:=https://github.com/hnyyghk/vlmcsd\nPKG_SOURCE_VERSION:=master\nPKG_MIRROR_HASH:=skip" custom-feed/applications/vlmcsd/Makefile
 
 #for i in "luci-app-vlmcsd" "openwrt-vlmcsd"; do \
 #  svn checkout "https://github.com/siwind/$i/trunk" "custom-feed/applications/$i"; \
