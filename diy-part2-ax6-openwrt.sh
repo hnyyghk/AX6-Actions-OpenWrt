@@ -225,6 +225,8 @@ SSR_SAVE_WORDS=""
 SSR_GLOBAL_SERVER=""
 
 refresh_ad_conf() {
+    sleep 30
+
     # 检查拦截列表
     # grep -v "\."                     /etc/smartdns/ad.conf
     # grep "address /api.xiaomi.com/#" /etc/smartdns/ad.conf
@@ -333,27 +335,17 @@ address /file.xmpush.xiaomi.com/#
 address /tracker.live.xycdn.com/#
 EOF
     # -t 重试次数 -T 超时时间 -c 断点续传 -P 下载到指定路径 -q 不显示执行过程 -O 以指定的文件名保存 -O- 以'-'作为file参数，将数据打印到标准输出，通常为控制台
-    (wget -t 5 -T 5 -c -P /etc/smartdns https://raw.githubusercontent.com/privacy-protection-tools/anti-AD/master/anti-ad-smartdns.conf || if [ -f "/etc/smartdns/anti-ad-smartdns.conf" ]; then rm /etc/smartdns/anti-ad-smartdns.conf; fi) >> /etc/custom.tag 2>&1
+    (wget -t 5 -T 5 -c -P /etc/smartdns --no-check-certificate --header "Host: raw.githubusercontent.com" https://185.199.109.133/privacy-protection-tools/anti-AD/master/anti-ad-smartdns.conf || if [ -f "/etc/smartdns/anti-ad-smartdns.conf" ]; then rm /etc/smartdns/anti-ad-smartdns.conf; fi) >> /etc/custom.tag 2>&1
     if [ -f "/etc/smartdns/anti-ad-smartdns.conf" ]; then
         grep "^address" /etc/smartdns/anti-ad-smartdns.conf | grep -v "address /pv.kuaizhan.com/#" | grep -v "address /changyan.sohu.com/#" >> /etc/smartdns/aaa.conf
         rm -f /etc/smartdns/anti-ad-smartdns.conf
     fi
-    (wget -t 5 -T 5 -c -P /etc/smartdns https://raw.githubusercontent.com/neodevpro/neodevhost/master/smartdns.conf || if [ -f "/etc/smartdns/smartdns.conf" ]; then rm /etc/smartdns/smartdns.conf; fi) >> /etc/custom.tag 2>&1
+    (wget -t 5 -T 5 -c -P /etc/smartdns --no-check-certificate --header "Host: raw.githubusercontent.com" https://185.199.109.133/neodevpro/neodevhost/master/smartdns.conf || if [ -f "/etc/smartdns/smartdns.conf" ]; then rm /etc/smartdns/smartdns.conf; fi) >> /etc/custom.tag 2>&1
     if [ -f "/etc/smartdns/smartdns.conf" ]; then
         grep "^address" /etc/smartdns/smartdns.conf | grep "\." | grep -v "address /pv.kuaizhan.com/#" | grep -v "address /changyan.sohu.com/#" | sed 's/\.\/#$/\/#/g' >> /etc/smartdns/aaa.conf
         rm -f /etc/smartdns/smartdns.conf
     fi
-    (wget -t 5 -T 5 -c -P /etc/smartdns https://raw.githubusercontent.com/jdlingyu/ad-wars/master/sha_ad_hosts || if [ -f "/etc/smartdns/sha_ad_hosts" ]; then rm /etc/smartdns/sha_ad_hosts; fi) >> /etc/custom.tag 2>&1
-    if [ -f "/etc/smartdns/sha_ad_hosts" ]; then
-        grep "^127" /etc/smartdns/sha_ad_hosts > /etc/smartdns/host
-        sed -i '1d' /etc/smartdns/host
-        sed -i 's/127.0.0.1 \*\./127.0.0.1 /g' /etc/smartdns/host
-        sed -i 's/127.0.0.1 /address \//g;s/$/\/#/g' /etc/smartdns/host
-        cat /etc/smartdns/host | grep -v "address /changyan.sohu.com/#" >> /etc/smartdns/aaa.conf
-        rm -f /etc/smartdns/host
-        rm -f /etc/smartdns/sha_ad_hosts
-    fi
-    (wget -t 5 -T 5 -c -P /etc/smartdns https://raw.githubusercontent.com/AdAway/adaway.github.io/master/hosts.txt || if [ -f "/etc/smartdns/hosts.txt" ]; then rm /etc/smartdns/hosts.txt; fi) >> /etc/custom.tag 2>&1
+    (wget -t 5 -T 5 -c -P /etc/smartdns --no-check-certificate --header "Host: raw.githubusercontent.com" https://185.199.109.133/AdAway/adaway.github.io/master/hosts.txt || if [ -f "/etc/smartdns/hosts.txt" ]; then rm /etc/smartdns/hosts.txt; fi) >> /etc/custom.tag 2>&1
     if [ -f "/etc/smartdns/hosts.txt" ]; then
         grep "^127" /etc/smartdns/hosts.txt > /etc/smartdns/host
         sed -i '1d' /etc/smartdns/host
@@ -362,7 +354,7 @@ EOF
         rm -f /etc/smartdns/host
         rm -f /etc/smartdns/hosts.txt
     fi
-    (wget -t 5 -T 5 -c -P /etc/smartdns https://raw.githubusercontent.com/FuckNoMotherCompanyAlliance/Fuck_CJMarketing_hosts/master/hosts || if [ -f "/etc/smartdns/hosts" ]; then rm /etc/smartdns/hosts; fi) >> /etc/custom.tag 2>&1
+    (wget -t 5 -T 5 -c -P /etc/smartdns --no-check-certificate --header "Host: raw.githubusercontent.com" https://185.199.109.133/FuckNoMotherCompanyAlliance/Fuck_CJMarketing_hosts/master/hosts || if [ -f "/etc/smartdns/hosts" ]; then rm /etc/smartdns/hosts; fi) >> /etc/custom.tag 2>&1
     if [ -f "/etc/smartdns/hosts" ]; then
         grep "^0" /etc/smartdns/hosts | tr -d "\r" > /etc/smartdns/host
         sed -i 's/www.xitongqingli.com /www.xitongqingli.com/' /etc/smartdns/host
@@ -371,7 +363,7 @@ EOF
         rm -f /etc/smartdns/host
         rm -f /etc/smartdns/hosts
     fi
-    (wget -t 5 -T 5 -c -P /etc/smartdns https://raw.githubusercontent.com/Goooler/1024_hosts/master/hosts || if [ -f "/etc/smartdns/hosts" ]; then rm /etc/smartdns/hosts; fi) >> /etc/custom.tag 2>&1
+    (wget -t 5 -T 5 -c -P /etc/smartdns --no-check-certificate --header "Host: raw.githubusercontent.com" https://185.199.109.133/Goooler/1024_hosts/master/hosts || if [ -f "/etc/smartdns/hosts" ]; then rm /etc/smartdns/hosts; fi) >> /etc/custom.tag 2>&1
     if [ -f "/etc/smartdns/hosts" ]; then
         grep "^127" /etc/smartdns/hosts | tr -d "\r" | sed 's/\.$//g' > /etc/smartdns/host
         sed -i 's/127.0.0.1 /address \//g;s/$/\/#/g' /etc/smartdns/host
@@ -379,7 +371,7 @@ EOF
         rm -f /etc/smartdns/host
         rm -f /etc/smartdns/hosts
     fi
-    (wget -t 5 -T 5 -c -P /etc/smartdns https://raw.githubusercontent.com/VeleSila/yhosts/master/hosts.txt || if [ -f "/etc/smartdns/hosts.txt" ]; then rm /etc/smartdns/hosts.txt; fi) >> /etc/custom.tag 2>&1
+    (wget -t 5 -T 5 -c -P /etc/smartdns --no-check-certificate --header "Host: raw.githubusercontent.com" https://185.199.109.133/VeleSila/yhosts/master/hosts.txt || if [ -f "/etc/smartdns/hosts.txt" ]; then rm /etc/smartdns/hosts.txt; fi) >> /etc/custom.tag 2>&1
     if [ -f "/etc/smartdns/hosts.txt" ]; then
         grep "^0" /etc/smartdns/hosts.txt | grep -v "0.0.0.0 XiaoQiang" | grep -v "0.0.0.0 localhost" | sed 's/\.$//g' > /etc/smartdns/host.txt
         sed -i 's/0.0.0.0 /address \//g;s/$/\/#/g' /etc/smartdns/host.txt
@@ -387,7 +379,7 @@ EOF
         rm -f /etc/smartdns/host.txt
         rm -f /etc/smartdns/hosts.txt
     fi
-    (wget -t 5 -T 5 -c -P /etc/smartdns https://raw.githubusercontent.com/StevenBlack/hosts/master/alternates/fakenews-gambling/hosts || if [ -f "/etc/smartdns/hosts" ]; then rm /etc/smartdns/hosts; fi) >> /etc/custom.tag 2>&1
+    (wget -t 5 -T 5 -c -P /etc/smartdns --no-check-certificate --header "Host: raw.githubusercontent.com" https://185.199.109.133/StevenBlack/hosts/master/alternates/fakenews-gambling/hosts || if [ -f "/etc/smartdns/hosts" ]; then rm /etc/smartdns/hosts; fi) >> /etc/custom.tag 2>&1
     if [ -f "/etc/smartdns/hosts" ]; then
         grep "^0" /etc/smartdns/hosts | sed 's/[ ]*#.*$//g' > /etc/smartdns/host.txt
         sed -i '1d' /etc/smartdns/host.txt
@@ -396,7 +388,7 @@ EOF
         rm -f /etc/smartdns/host.txt
         rm -f /etc/smartdns/hosts
     fi
-    (wget -t 5 -T 5 -c -P /etc/smartdns https://raw.githubusercontent.com/Loyalsoldier/v2ray-rules-dat/release/reject-list.txt || if [ -f "/etc/smartdns/reject-list.txt" ]; then rm /etc/smartdns/reject-list.txt; fi) >> /etc/custom.tag 2>&1
+    (wget -t 5 -T 5 -c -P /etc/smartdns --no-check-certificate --header "Host: raw.githubusercontent.com" https://185.199.109.133/Loyalsoldier/v2ray-rules-dat/release/reject-list.txt || if [ -f "/etc/smartdns/reject-list.txt" ]; then rm /etc/smartdns/reject-list.txt; fi) >> /etc/custom.tag 2>&1
     if [ -f "/etc/smartdns/reject-list.txt" ]; then
         sed -i 's/^/address \//g;s/$/\/#/g' /etc/smartdns/reject-list.txt
         cat /etc/smartdns/reject-list.txt | grep -v "address /pv.kuaizhan.com/#" >> /etc/smartdns/aaa.conf
