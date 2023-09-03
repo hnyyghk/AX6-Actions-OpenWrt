@@ -17,7 +17,7 @@
 echo 'src-git helloworld https://github.com/fw876/helloworld' >> feeds.conf.default
 #echo 'src-git passwall_packages https://github.com/xiaorouji/openwrt-passwall;packages' >> feeds.conf.default
 #echo 'src-git passwall_luci https://github.com/xiaorouji/openwrt-passwall;luci' >> feeds.conf.default
-echo 'src-git kenzo https://github.com/kenzok8/openwrt-packages' >> feeds.conf.default
+echo 'src-git kiddin9 https://github.com/kiddin9/openwrt-packages' >> feeds.conf.default
 #echo 'src-git lienol https://github.com/Lienol/openwrt-package' >> feeds.conf.default
 #echo 'src-git Boos https://github.com/Boos4721/OpenWrt-Packages' >> feeds.conf.default
 echo 'src-link custom /workdir/openwrt/custom-feed' >> feeds.conf.default
@@ -26,17 +26,4 @@ mkdir -p custom-feed/applications
 
 for i in "ipv6-helper"; do \
   svn checkout "https://github.com/coolsnowwolf/lede/trunk/package/lean/$i" "custom-feed/applications/$i"; \
-done
-
-for i in "luci-app-vlmcsd"; do \
-  svn checkout "https://github.com/coolsnowwolf/luci/trunk/applications/$i" "custom-feed/applications/$i"; \
-done
-sed -i 's/include ..\/..\/luci.mk/include $(TOPDIR)\/feeds\/luci\/luci.mk/' custom-feed/applications/luci-app-vlmcsd/Makefile
-
-for i in "vlmcsd"; do \
-  svn checkout "https://github.com/coolsnowwolf/packages/trunk/net/$i" "custom-feed/applications/$i"; \
-done
-
-for i in "luci-app-autoreboot"; do \
-  svn checkout "https://github.com/kenzok8/small-package/trunk/$i" "custom-feed/applications/$i"; \
 done
