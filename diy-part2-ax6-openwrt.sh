@@ -518,25 +518,6 @@ EOF
 
     sleep 30
 
-    uci set ddns.test=service
-    uci set ddns.test.service_name='cloudflare.com-v4'
-    uci set ddns.test.use_ipv6='1'
-    uci set ddns.test.enabled='1'
-    uci set ddns.test.lookup_host='test.5icodes.com'
-    uci set ddns.test.domain='test@5icodes.com'
-    uci set ddns.test.username="\${DDNS_USERNAME}"
-    uci set ddns.test.password="\${DDNS_PASSWORD}"
-    uci set ddns.test.ip_source='network'
-    uci set ddns.test.ip_network='wan6'
-    uci set ddns.test.interface='wan6'
-    uci set ddns.test.use_syslog='2'
-    uci set ddns.test.check_unit='minutes'
-    uci set ddns.test.force_unit='minutes'
-    uci set ddns.test.retry_unit='seconds'
-    uci commit ddns
-    /etc/init.d/ddns restart >> /etc/custom.tag 2>&1
-    echo "ddns finish" >> /etc/custom.tag
-
     echo "cloudflare-dns.com" >> /etc/ssrplus/black.list
     echo "dns.google" >> /etc/ssrplus/black.list
     echo "doh.opendns.com" >> /etc/ssrplus/black.list
@@ -559,6 +540,27 @@ EOF
     /etc/init.d/shadowsocksr restart >> /etc/custom.tag 2>&1
     echo "shadowsocksr finish" >> /etc/custom.tag
 
+    refresh_ad_conf
+
+    uci set ddns.test=service
+    uci set ddns.test.service_name='cloudflare.com-v4'
+    uci set ddns.test.use_ipv6='1'
+    uci set ddns.test.enabled='1'
+    uci set ddns.test.lookup_host='test.5icodes.com'
+    uci set ddns.test.domain='test@5icodes.com'
+    uci set ddns.test.username="\${DDNS_USERNAME}"
+    uci set ddns.test.password="\${DDNS_PASSWORD}"
+    uci set ddns.test.ip_source='network'
+    uci set ddns.test.ip_network='wan6'
+    uci set ddns.test.interface='wan6'
+    uci set ddns.test.use_syslog='2'
+    uci set ddns.test.check_unit='minutes'
+    uci set ddns.test.force_unit='minutes'
+    uci set ddns.test.retry_unit='seconds'
+    uci commit ddns
+    /etc/init.d/ddns restart >> /etc/custom.tag 2>&1
+    echo "ddns finish" >> /etc/custom.tag
+
     # crontab -l 查看计划表
     uci set acme.cfg01f3db.account_email="\${DDNS_USERNAME}"
     uci set acme.cfg01f3db.debug='1'
@@ -566,7 +568,7 @@ EOF
     uci set acme.test=cert
     uci set acme.test.enabled='1'
     uci set acme.test.use_staging='0'
-    uci set acme.test.keylength='2048'
+    uci set acme.test.key_type='rsa2048'
     uci add_list acme.test.domains='test.5icodes.com'
     uci set acme.test.update_uhttpd='0'
     uci set acme.test.update_nginx='0'
@@ -578,7 +580,7 @@ EOF
     uci set acme.wildcard=cert
     uci set acme.wildcard.enabled='1'
     uci set acme.wildcard.use_staging='0'
-    uci set acme.wildcard.keylength='2048'
+    uci set acme.wildcard.key_type='rsa2048'
     uci add_list acme.wildcard.domains='5icodes.com'
     uci add_list acme.wildcard.domains='*.5icodes.com'
     uci set acme.wildcard.update_uhttpd='0'
@@ -589,7 +591,7 @@ EOF
     uci add_list acme.wildcard.credentials="CF_Key=\${DDNS_PASSWORD}"
 
     uci commit acme
-    /usr/bin/acme get >> /etc/custom.tag 2>&1
+    /etc/init.d/acme restart >> /etc/custom.tag 2>&1
     mkdir -p /data/5icodes.com/test./cert
     /usr/lib/acme/client/acme.sh --home "/etc/acme" --install-cert -d test.5icodes.com --key-file /data/5icodes.com/test./cert/_lan.key --fullchain-file /data/5icodes.com/test./cert/_lan.crt --reloadcmd "service nginx reload" >> /etc/custom.tag 2>&1
     mkdir -p /data/5icodes.com/cert
@@ -599,8 +601,6 @@ EOF
     # to generate your dhparam.pem file, run in the terminal
     openssl dhparam -out /data/5icodes.com/cert/dhparam.pem 2048 >> /etc/custom.tag 2>&1
     echo "dhparam finish" >> /etc/custom.tag
-
-    refresh_ad_conf
 }
 
 if [ -f "/etc/custom.tag" ]; then
