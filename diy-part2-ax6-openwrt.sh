@@ -203,14 +203,14 @@ sed -i 's/${name}.disabled=1/${name}.country=US\n\t\t\tset wireless.${name}.disa
 sed -i "s/\${name}.ssid=OpenWrt/radio0.ssid=${WIFI_SSID}\n\t\t\tset wireless.default_radio1.ssid=${WIFI_SSID}_2.4G/" package/kernel/mac80211/files/lib/wifi/mac80211.sh
 sed -i "s/\${name}.encryption=none/\${name}.encryption=psk-mixed\n\t\t\tset wireless.default_\${name}.key=${WIFI_KEY}/" package/kernel/mac80211/files/lib/wifi/mac80211.sh
 
-# hijack dns queries to adguardhome(firewall)
+# hijack dns queries to router(firewall)
 sed -i '/REDIRECT --to-ports 53/d' package/network/config/firewall/files/firewall.user
-# 把局域网内所有客户端对外ipv4的53端口查询请求，都劫持指向adguardhome(iptables -n -t nat -L PREROUTING -v --line-number)(iptables -t nat -D PREROUTING 2)
-echo 'iptables -t nat -A PREROUTING -p udp --dport 53 -j REDIRECT --to-ports 1745' >> package/network/config/firewall/files/firewall.user
-echo 'iptables -t nat -A PREROUTING -p tcp --dport 53 -j REDIRECT --to-ports 1745' >> package/network/config/firewall/files/firewall.user
-# 把局域网内所有客户端对外ipv6的53端口查询请求，都劫持指向adguardhome(ip6tables -n -t nat -L PREROUTING -v --line-number)(ip6tables -t nat -D PREROUTING 1)
-echo '[ -n "$(command -v ip6tables)" ] && ip6tables -t nat -A PREROUTING -p udp --dport 53 -j REDIRECT --to-ports 1745' >> package/network/config/firewall/files/firewall.user
-echo '[ -n "$(command -v ip6tables)" ] && ip6tables -t nat -A PREROUTING -p tcp --dport 53 -j REDIRECT --to-ports 1745' >> package/network/config/firewall/files/firewall.user
+# 把局域网内所有客户端对外ipv4的53端口查询请求，都劫持指向路由器(iptables -n -t nat -L PREROUTING -v --line-number)(iptables -t nat -D PREROUTING 2)
+echo 'iptables -t nat -A PREROUTING -p udp --dport 53 -j REDIRECT --to-ports 53' >> package/network/config/firewall/files/firewall.user
+echo 'iptables -t nat -A PREROUTING -p tcp --dport 53 -j REDIRECT --to-ports 53' >> package/network/config/firewall/files/firewall.user
+# 把局域网内所有客户端对外ipv6的53端口查询请求，都劫持指向路由器(ip6tables -n -t nat -L PREROUTING -v --line-number)(ip6tables -t nat -D PREROUTING 1)
+echo '[ -n "$(command -v ip6tables)" ] && ip6tables -t nat -A PREROUTING -p udp --dport 53 -j REDIRECT --to-ports 53' >> package/network/config/firewall/files/firewall.user
+echo '[ -n "$(command -v ip6tables)" ] && ip6tables -t nat -A PREROUTING -p tcp --dport 53 -j REDIRECT --to-ports 53' >> package/network/config/firewall/files/firewall.user
 
 # 修改初始化配置
 touch package/base-files/files/etc/custom.tag
@@ -470,15 +470,6 @@ EOF
     /etc/init.d/smartdns restart >> /etc/custom.tag 2>&1
     echo "smartdns remote dns server list finish" >> /etc/custom.tag
 
-    sed -i 's/- 223.5.5.5/- 127.0.0.1/' /etc/AdGuardHome.yaml
-    sed -i '/- 119.29.29.29/d' /etc/AdGuardHome.yaml
-    sed -i 's/cache_size: 4194304/cache_size: 0/' /etc/AdGuardHome.yaml
-    sed -i 's/port: 5553/port: 1745/' /etc/AdGuardHome.yaml
-    uci set AdGuardHome.AdGuardHome.enabled='1'
-    uci commit AdGuardHome
-    /etc/init.d/AdGuardHome restart >> /etc/custom.tag 2>&1
-    echo "AdGuardHome finish" >> /etc/custom.tag
-
     #uci set network.wan.proto='pppoe'
     #uci set network.wan.username="\${PPPOE_USERNAME}"
     #uci set network.wan.password="\${PPPOE_PASSWORD}"
@@ -497,13 +488,13 @@ EOF
 
     #uci add_list firewall.cfg03dc81.network='modem'
     #uci commit firewall
-    # hijack dns queries to adguardhome(firewall4)
-    # 把局域网内所有客户端对外ipv4和ipv6的53端口查询请求，都劫持指向adguardhome(nft list chain inet fw4 dns-redirect)(nft delete chain inet fw4 dns-redirect)
+    # hijack dns queries to router(firewall4)
+    # 把局域网内所有客户端对外ipv4和ipv6的53端口查询请求，都劫持指向路由器(nft list chain inet fw4 dns-redirect)(nft delete chain inet fw4 dns-redirect)
     cat >> /etc/nftables.d/10-custom-filter-chains.nft << EOF
 chain dns-redirect {
     type nat hook prerouting priority -105;
-    udp dport 53 counter redirect to :1745
-    tcp dport 53 counter redirect to :1745
+    udp dport 53 counter redirect to :53
+    tcp dport 53 counter redirect to :53
 }
 
 EOF
