@@ -42,6 +42,7 @@ echo 'applications/luci-app-autoreboot' >> .git/info/sparse-checkout
 git pull origin master
 sed -i 's/include ..\/..\/luci.mk/include $(TOPDIR)\/feeds\/luci\/luci.mk/' applications/luci-app-vlmcsd/Makefile
 sed -i 's/include ..\/..\/luci.mk/include $(TOPDIR)\/feeds\/luci\/luci.mk/' applications/luci-app-autoreboot/Makefile
+sed -i 's/LUCI_DEPENDS:=+luci/LUCI_DEPENDS:=/' applications/luci-app-autoreboot/Makefile
 cd ../
 
 git init coolsnowwolf_packages
