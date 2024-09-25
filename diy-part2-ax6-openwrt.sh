@@ -199,9 +199,9 @@ sed -i '/customized in this file/a fs.file-max=102400\nnet.ipv4.neigh.default.gc
 sed -i 's/root:::0:99999:7:::/root:$1$V4UetPzk$CYXluq4wUazHjmCDBCqXF.:0:0:99999:7:::/' package/base-files/files/etc/shadow
 
 # 修改无线国家代码、开关、命名、加密方式及密码
-sed -i 's/${name}.disabled=1/${name}.country=US\n\t\t\tset wireless.${name}.disabled=0/' package/kernel/mac80211/files/lib/wifi/mac80211.sh
-sed -i "s/\${name}.ssid=OpenWrt/radio0.ssid=${WIFI_SSID}\n\t\t\tset wireless.default_radio1.ssid=${WIFI_SSID}_2.4G/" package/kernel/mac80211/files/lib/wifi/mac80211.sh
-sed -i "s/\${name}.encryption=none/\${name}.encryption=psk-mixed\n\t\t\tset wireless.default_\${name}.key=${WIFI_KEY}/" package/kernel/mac80211/files/lib/wifi/mac80211.sh
+sed -i "s/\${s}.disabled='1'/\${s}.country=US\nset \${s}.disabled='0'/" package/network/config/wifi-scripts/files/lib/wifi/mac80211.uc
+sed -i "s/\${si}.ssid='OpenWrt'/wireless.default_radio0.ssid='${WIFI_SSID}'\nset wireless.default_radio1.ssid='${WIFI_SSID}_2.4G'/" package/network/config/wifi-scripts/files/lib/wifi/mac80211.uc
+sed -i "s/\${si}.encryption='none'/\${si}.encryption='psk-mixed'\nset \${si}.key='${WIFI_KEY}'/" package/network/config/wifi-scripts/files/lib/wifi/mac80211.uc
 
 # hijack dns queries to router(firewall)
 sed -i '/REDIRECT --to-ports 53/d' package/network/config/firewall/files/firewall.user
