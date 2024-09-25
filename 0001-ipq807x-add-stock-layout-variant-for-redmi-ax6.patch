@@ -5,27 +5,16 @@ Subject: [PATCH] ipq807x: add stock layout variant for redmi ax6
 
 Signed-off-by: Tianling Shen <cnsztl@immortalwrt.org>
 ---
- .../uboot-envtools/files/qualcommax_ipq807x   |  2 +
- .../boot/dts/qcom/ipq8071-ax3600-stock.dts    | 61 +++++++++++++++++++
- .../arm64/boot/dts/qcom/ipq8071-ax6-stock.dts | 56 +++++++++++++++++
- target/linux/qualcommax/image/ipq807x.mk      | 16 +++++
- .../ipq807x/base-files/etc/board.d/01_leds    |  4 +-
- .../ipq807x/base-files/etc/board.d/02_network |  4 +-
- .../etc/hotplug.d/firmware/11-ath10k-caldata  | 20 ++++++
- .../etc/hotplug.d/firmware/11-ath11k-caldata  |  2 +
- .../ipq807x/base-files/etc/init.d/bootcount   |  7 +++
- .../base-files/lib/upgrade/platform.sh        | 27 ++++++++
- 10 files changed, 197 insertions(+), 2 deletions(-)
- create mode 100644 target/linux/qualcommax/files/arch/arm64/boot/dts/qcom/ipq8071-ax3600-stock.dts
- create mode 100644 target/linux/qualcommax/files/arch/arm64/boot/dts/qcom/ipq8071-ax6-stock.dts
- create mode 100644 target/linux/qualcommax/ipq807x/base-files/etc/hotplug.d/firmware/11-ath10k-caldata
-
+Index: package/boot/uboot-envtools/files/qualcommax_ipq807x
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
 diff --git a/package/boot/uboot-envtools/files/qualcommax_ipq807x b/package/boot/uboot-envtools/files/qualcommax_ipq807x
-index 297c727857..2b84078099 100644
---- a/package/boot/uboot-envtools/files/qualcommax_ipq807x
-+++ b/package/boot/uboot-envtools/files/qualcommax_ipq807x
-@@ -28,7 +28,9 @@ edimax,cax1800)
- 		ubootenv_add_uci_config "/dev/mtd$idx" "0x0" "0x10000" "0x20000"
+--- a/package/boot/uboot-envtools/files/qualcommax_ipq807x	(revision 23ac1ad9515588321970985859b2ee0cc8243f91)
++++ b/package/boot/uboot-envtools/files/qualcommax_ipq807x	(revision 7a6bcb958d2412ae5452b1da480af6bed5a949cc)
+@@ -45,7 +45,9 @@
+ 		ubootenv_add_uci_config "/dev/mtd$idx" "0x0" "0x40000" "0x20000"
  	;;
  redmi,ax6|\
 +redmi,ax6-stock|\
@@ -34,12 +23,16 @@ index 297c727857..2b84078099 100644
  xiaomi,ax9000)
  	idx="$(find_mtd_index 0:appsblenv)"
  	[ -n "$idx" ] && \
+Index: target/linux/qualcommax/files/arch/arm64/boot/dts/qcom/ipq8071-ax3600-stock.dts
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
 diff --git a/target/linux/qualcommax/files/arch/arm64/boot/dts/qcom/ipq8071-ax3600-stock.dts b/target/linux/qualcommax/files/arch/arm64/boot/dts/qcom/ipq8071-ax3600-stock.dts
 new file mode 100644
-index 0000000000..8d82c2d29e
---- /dev/null
-+++ b/target/linux/qualcommax/files/arch/arm64/boot/dts/qcom/ipq8071-ax3600-stock.dts
-@@ -0,0 +1,61 @@
+--- /dev/null	(revision 7a6bcb958d2412ae5452b1da480af6bed5a949cc)
++++ b/target/linux/qualcommax/files/arch/arm64/boot/dts/qcom/ipq8071-ax3600-stock.dts	(revision 7a6bcb958d2412ae5452b1da480af6bed5a949cc)
+@@ -0,0 +1,57 @@
 +// SPDX-License-Identifier: GPL-2.0-or-later OR MIT
 +
 +#include "ipq8071-ax3600.dts"
@@ -63,13 +56,9 @@ index 0000000000..8d82c2d29e
 +
 +&qpic_nand {
 +	/delete-node/ partitions;
-+	/delete-node/ nand@0;
 +
 +	nand@0 {
-+		reg = <0>;
-+		nand-ecc-strength = <4>;
-+		nand-ecc-step-size = <512>;
-+		nand-bus-width = <8>;
++		/delete-node/ partitions;
 +
 +		partitions {
 +			compatible = "qcom,smem-part";
@@ -101,12 +90,16 @@ index 0000000000..8d82c2d29e
 +	/delete-property/ nvmem-cells;
 +	/delete-property/ nvmem-cell-names;
 +};
+Index: target/linux/qualcommax/files/arch/arm64/boot/dts/qcom/ipq8071-ax6-stock.dts
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
 diff --git a/target/linux/qualcommax/files/arch/arm64/boot/dts/qcom/ipq8071-ax6-stock.dts b/target/linux/qualcommax/files/arch/arm64/boot/dts/qcom/ipq8071-ax6-stock.dts
 new file mode 100644
-index 0000000000..13c8114058
---- /dev/null
-+++ b/target/linux/qualcommax/files/arch/arm64/boot/dts/qcom/ipq8071-ax6-stock.dts
-@@ -0,0 +1,56 @@
+--- /dev/null	(revision 7a6bcb958d2412ae5452b1da480af6bed5a949cc)
++++ b/target/linux/qualcommax/files/arch/arm64/boot/dts/qcom/ipq8071-ax6-stock.dts	(revision 7a6bcb958d2412ae5452b1da480af6bed5a949cc)
+@@ -0,0 +1,52 @@
 +// SPDX-License-Identifier: GPL-2.0-or-later OR MIT
 +
 +#include "ipq8071-ax6.dts"
@@ -130,13 +123,9 @@ index 0000000000..13c8114058
 +
 +&qpic_nand {
 +	/delete-node/ partitions;
-+	/delete-node/ nand@0;
 +
 +	nand@0 {
-+		reg = <0>;
-+		nand-ecc-strength = <4>;
-+		nand-ecc-step-size = <512>;
-+		nand-bus-width = <8>;
++		/delete-node/ partitions;
 +
 +		partitions {
 +			compatible = "qcom,smem-part";
@@ -163,32 +152,42 @@ index 0000000000..13c8114058
 +	/delete-property/ nvmem-cells;
 +	/delete-property/ nvmem-cell-names;
 +};
+Index: target/linux/qualcommax/image/ipq807x.mk
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
 diff --git a/target/linux/qualcommax/image/ipq807x.mk b/target/linux/qualcommax/image/ipq807x.mk
-index 440a267497..0e190f7a5e 100644
---- a/target/linux/qualcommax/image/ipq807x.mk
-+++ b/target/linux/qualcommax/image/ipq807x.mk
-@@ -164,6 +164,14 @@ define Device/redmi_ax6
+--- a/target/linux/qualcommax/image/ipq807x.mk	(revision 23ac1ad9515588321970985859b2ee0cc8243f91)
++++ b/target/linux/qualcommax/image/ipq807x.mk	(revision 7a6bcb958d2412ae5452b1da480af6bed5a949cc)
+@@ -332,6 +332,17 @@
  endef
  TARGET_DEVICES += redmi_ax6
  
 +define Device/redmi_ax6-stock
 +	$(call Device/redmi_ax6)
 +	DEVICE_VARIANT := (stock layout)
++	DEVICE_ALT0_VENDOR := Redmi
++	DEVICE_ALT0_MODEL := AX6
++	DEVICE_ALT0_VARIANT := (custom U-Boot layout)
 +	KERNEL_SIZE :=
 +	ARTIFACTS :=
 +endef
 +TARGET_DEVICES += redmi_ax6-stock
 +
- define Device/xiaomi_ax3600
+ define Device/spectrum_sax1v1k
  	$(call Device/FitImage)
- 	$(call Device/UbiFit)
-@@ -182,6 +190,14 @@ endif
+ 	$(call Device/EmmcImage)
+@@ -376,6 +387,17 @@
  endef
  TARGET_DEVICES += xiaomi_ax3600
  
 +define Device/xiaomi_ax3600-stock
 +	$(call Device/xiaomi_ax3600)
 +	DEVICE_VARIANT := (stock layout)
++	DEVICE_ALT0_VENDOR := Xiaomi
++	DEVICE_ALT0_MODEL := AX3600
++	DEVICE_ALT0_VARIANT := (custom U-Boot layout)
 +	KERNEL_SIZE :=
 +	ARTIFACTS :=
 +endef
@@ -197,41 +196,58 @@ index 440a267497..0e190f7a5e 100644
  define Device/xiaomi_ax9000
  	$(call Device/FitImage)
  	$(call Device/UbiFit)
+Index: target/linux/qualcommax/ipq807x/base-files/etc/board.d/01_leds
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
 diff --git a/target/linux/qualcommax/ipq807x/base-files/etc/board.d/01_leds b/target/linux/qualcommax/ipq807x/base-files/etc/board.d/01_leds
-index 6e2ec60403..861b9cd3f8 100644
---- a/target/linux/qualcommax/ipq807x/base-files/etc/board.d/01_leds
-+++ b/target/linux/qualcommax/ipq807x/base-files/etc/board.d/01_leds
-@@ -18,7 +18,9 @@ netgear,wax218)
- 	ucidef_set_led_wlan "wlan2g" "WIFI 2.4GHz" "blue:wlan2g" "phy1radio"
+--- a/target/linux/qualcommax/ipq807x/base-files/etc/board.d/01_leds	(revision 23ac1ad9515588321970985859b2ee0cc8243f91)
++++ b/target/linux/qualcommax/ipq807x/base-files/etc/board.d/01_leds	(revision 7a6bcb958d2412ae5452b1da480af6bed5a949cc)
+@@ -38,10 +38,12 @@
+ 	ucidef_set_led_netdev "lan1" "LAN1" "lan1:green" "lan1"
+ 	ucidef_set_led_netdev "lan2" "LAN2" "lan2:green" "lan2"
  	;;
- redmi,ax6|\
--xiaomi,ax3600)
-+redmi,ax6-stock|\
-+xiaomi,ax3600|\
-+xiaomi,ax3600-stock)
+-redmi,ax6)
++redmi,ax6|\
++redmi,ax6-stock)
  	ucidef_set_led_netdev "wan" "WAN" "blue:network" "wan"
  	;;
- qnap,301w)
+-xiaomi,ax3600)
++xiaomi,ax3600|\
++xiaomi,ax3600-stock)
+ 	ucidef_set_led_netdev "wan-port-link" "WAN-PORT-LINK" "90000.mdio-1:01:green:wan" "wan" "tx rx link_10 link_100 link_1000"
+ 	ucidef_set_led_netdev "lan1-port-link" "LAN1-PORT-LINK" "90000.mdio-1:02:green:lan" "lan1" "tx rx link_10 link_100 link_1000"
+ 	ucidef_set_led_netdev "lan2-port-link" "LAN2-PORT-LINK" "90000.mdio-1:03:green:lan" "lan2" "tx rx link_10 link_100 link_1000"
+Index: target/linux/qualcommax/ipq807x/base-files/etc/board.d/02_network
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
 diff --git a/target/linux/qualcommax/ipq807x/base-files/etc/board.d/02_network b/target/linux/qualcommax/ipq807x/base-files/etc/board.d/02_network
-index 3953ae8db2..6c81461fa9 100644
---- a/target/linux/qualcommax/ipq807x/base-files/etc/board.d/02_network
-+++ b/target/linux/qualcommax/ipq807x/base-files/etc/board.d/02_network
-@@ -36,7 +36,9 @@ ipq807x_setup_interfaces()
- 		;;
- 	compex,wpq873|\
+--- a/target/linux/qualcommax/ipq807x/base-files/etc/board.d/02_network	(revision 23ac1ad9515588321970985859b2ee0cc8243f91)
++++ b/target/linux/qualcommax/ipq807x/base-files/etc/board.d/02_network	(revision 7a6bcb958d2412ae5452b1da480af6bed5a949cc)
+@@ -31,8 +31,10 @@
+ 	linksys,mx4200v2|\
+ 	prpl,haze|\
  	redmi,ax6|\
--	xiaomi,ax3600)
 +	redmi,ax6-stock|\
+ 	spectrum,sax1v1k|\
+-	xiaomi,ax3600)
 +	xiaomi,ax3600|\
 +	xiaomi,ax3600-stock)
  		ucidef_set_interfaces_lan_wan "lan1 lan2 lan3" "wan"
  		;;
- 	zyxel,nbg7815)
+ 	edgecore,eap102|\
+Index: target/linux/qualcommax/ipq807x/base-files/etc/hotplug.d/firmware/11-ath10k-caldata
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
 diff --git a/target/linux/qualcommax/ipq807x/base-files/etc/hotplug.d/firmware/11-ath10k-caldata b/target/linux/qualcommax/ipq807x/base-files/etc/hotplug.d/firmware/11-ath10k-caldata
 new file mode 100644
-index 0000000000..c6126c0407
---- /dev/null
-+++ b/target/linux/qualcommax/ipq807x/base-files/etc/hotplug.d/firmware/11-ath10k-caldata
+--- /dev/null	(revision 7a6bcb958d2412ae5452b1da480af6bed5a949cc)
++++ b/target/linux/qualcommax/ipq807x/base-files/etc/hotplug.d/firmware/11-ath10k-caldata	(revision 7a6bcb958d2412ae5452b1da480af6bed5a949cc)
 @@ -0,0 +1,20 @@
 +#!/bin/sh
 +
@@ -253,11 +269,15 @@ index 0000000000..c6126c0407
 +	exit 1
 +	;;
 +esac
+Index: target/linux/qualcommax/ipq807x/base-files/etc/hotplug.d/firmware/11-ath11k-caldata
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
 diff --git a/target/linux/qualcommax/ipq807x/base-files/etc/hotplug.d/firmware/11-ath11k-caldata b/target/linux/qualcommax/ipq807x/base-files/etc/hotplug.d/firmware/11-ath11k-caldata
-index 742730f476..2603123d68 100644
---- a/target/linux/qualcommax/ipq807x/base-files/etc/hotplug.d/firmware/11-ath11k-caldata
-+++ b/target/linux/qualcommax/ipq807x/base-files/etc/hotplug.d/firmware/11-ath11k-caldata
-@@ -18,7 +18,9 @@ case "$FIRMWARE" in
+--- a/target/linux/qualcommax/ipq807x/base-files/etc/hotplug.d/firmware/11-ath11k-caldata	(revision 23ac1ad9515588321970985859b2ee0cc8243f91)
++++ b/target/linux/qualcommax/ipq807x/base-files/etc/hotplug.d/firmware/11-ath11k-caldata	(revision 7a6bcb958d2412ae5452b1da480af6bed5a949cc)
+@@ -24,7 +24,9 @@
  	netgear,wax218|\
  	qnap,301w|\
  	redmi,ax6|\
@@ -265,15 +285,19 @@ index 742730f476..2603123d68 100644
  	xiaomi,ax3600|\
 +	xiaomi,ax3600-stock|\
  	xiaomi,ax9000|\
- 	zyxel,nbg7815)
- 		caldata_extract "0:art" 0x1000 0x20000
+ 	yuncore,ax880|\
+ 	zte,mf269)
+Index: target/linux/qualcommax/ipq807x/base-files/etc/init.d/bootcount
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
 diff --git a/target/linux/qualcommax/ipq807x/base-files/etc/init.d/bootcount b/target/linux/qualcommax/ipq807x/base-files/etc/init.d/bootcount
-index 6917446a9b..d79e79a53d 100755
---- a/target/linux/qualcommax/ipq807x/base-files/etc/init.d/bootcount
-+++ b/target/linux/qualcommax/ipq807x/base-files/etc/init.d/bootcount
-@@ -9,5 +9,12 @@ boot() {
- 		# Unset changed flag after sysupgrade complete
- 		fw_setenv changed
+--- a/target/linux/qualcommax/ipq807x/base-files/etc/init.d/bootcount	(revision 23ac1ad9515588321970985859b2ee0cc8243f91)
++++ b/target/linux/qualcommax/ipq807x/base-files/etc/init.d/bootcount	(revision 7a6bcb958d2412ae5452b1da480af6bed5a949cc)
+@@ -16,5 +16,12 @@
+ 	linksys,mx8500)
+ 		mtd resetbc s_env || true
  	;;
 +	redmi,ax6-stock|\
 +	xiaomi,ax3600-stock)
@@ -284,14 +308,20 @@ index 6917446a9b..d79e79a53d 100755
 +	;;
  	esac
  }
+Index: target/linux/qualcommax/ipq807x/base-files/lib/upgrade/platform.sh
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
 diff --git a/target/linux/qualcommax/ipq807x/base-files/lib/upgrade/platform.sh b/target/linux/qualcommax/ipq807x/base-files/lib/upgrade/platform.sh
-index a7af1cc1df..f04ee71d8b 100644
---- a/target/linux/qualcommax/ipq807x/base-files/lib/upgrade/platform.sh
-+++ b/target/linux/qualcommax/ipq807x/base-files/lib/upgrade/platform.sh
-@@ -114,5 +114,32 @@ platform_do_upgrade() {
- 	*)
- 		default_do_upgrade "$1"
- 		;;
+--- a/target/linux/qualcommax/ipq807x/base-files/lib/upgrade/platform.sh	(revision 23ac1ad9515588321970985859b2ee0cc8243f91)
++++ b/target/linux/qualcommax/ipq807x/base-files/lib/upgrade/platform.sh	(revision 7a6bcb958d2412ae5452b1da480af6bed5a949cc)
+@@ -209,6 +209,33 @@
+ 		# Kernel and rootfs are placed in 2 different UBI
+ 		CI_KERN_UBIPART="ubi_kernel"
+ 		CI_ROOT_UBIPART="rootfs"
++		nand_do_upgrade "$1"
++		;;
 +	redmi,ax6-stock|\
 +	xiaomi,ax3600-stock)
 +		part_num="$(fw_printenv -n flag_boot_rootfs)"
@@ -317,10 +347,6 @@ index a7af1cc1df..f04ee71d8b 100644
 +		# Reset success flag
 +		fw_setenv flag_boot_success 0
 +
-+		nand_do_upgrade "$1"
-+		;;
- 	esac
- }
--- 
-2.39.1.windows.1
-
+ 		nand_do_upgrade "$1"
+ 		;;
+ 	spectrum,sax1v1k)
