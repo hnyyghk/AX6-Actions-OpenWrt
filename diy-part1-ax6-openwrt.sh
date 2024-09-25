@@ -38,8 +38,10 @@ cd coolsnowwolf_luci
 git remote add origin https://github.com/coolsnowwolf/luci
 git config core.sparsecheckout true
 echo 'applications/luci-app-vlmcsd' >> .git/info/sparse-checkout
+echo 'applications/luci-app-autoreboot' >> .git/info/sparse-checkout
 git pull origin master
 sed -i 's/include ..\/..\/luci.mk/include $(TOPDIR)\/feeds\/luci\/luci.mk/' applications/luci-app-vlmcsd/Makefile
+sed -i 's/include ..\/..\/luci.mk/include $(TOPDIR)\/feeds\/luci\/luci.mk/' applications/luci-app-autoreboot/Makefile
 cd ../
 
 git init coolsnowwolf_packages
@@ -47,14 +49,6 @@ cd coolsnowwolf_packages
 git remote add origin https://github.com/coolsnowwolf/packages
 git config core.sparsecheckout true
 echo 'net/vlmcsd' >> .git/info/sparse-checkout
-git pull origin master
-cd ../
-
-git init kenzok8_small-package
-cd kenzok8_small-package
-git remote add origin https://github.com/kenzok8/small-package
-git config core.sparsecheckout true
-echo 'luci-app-autoreboot' >> .git/info/sparse-checkout
 git pull origin master
 cd ../
 
