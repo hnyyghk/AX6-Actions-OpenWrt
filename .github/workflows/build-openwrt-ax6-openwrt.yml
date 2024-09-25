@@ -8,11 +8,11 @@
 # Description: Build OpenWrt using GitHub Actions
 #
 
-name: ax6-5.15-lede
+name: ax6-openwrt
 
 on:
   repository_dispatch:
-    types: [Source Code Update lede]
+    types: [Source Code Update openwrt]
   workflow_dispatch:
     inputs:
       ssh:
@@ -21,12 +21,12 @@ on:
         default: 'false'
 
 env:
-  REPO_URL: https://github.com/coolsnowwolf/lede
+  REPO_URL: https://github.com/openwrt/openwrt
   REPO_BRANCH: master
   FEEDS_CONF: feeds.conf.default
-  CONFIG_FILE: lede.config
-  DIY_P1_SH: diy-part1-ax6-lede.sh
-  DIY_P2_SH: diy-part2-lede.sh
+  CONFIG_FILE: .config
+  DIY_P1_SH: diy-part1-ax6-openwrt.sh
+  DIY_P2_SH: diy-part2-ax6-openwrt.sh
   UPLOAD_BIN_DIR: false
   UPLOAD_FIRMWARE: true
   UPLOAD_COWTRANSFER: false
@@ -93,7 +93,7 @@ jobs:
         chmod +x $DIY_P2_SH
         cd openwrt
         $GITHUB_WORKSPACE/$DIY_P2_SH "${{ env.REPO_URL }}" "${{ env.REPO_BRANCH }}" "${{ env.COMMIT_HASH }}" "${{ env.DEVICE_NAME }}" "${{ secrets.WIFI_SSID }}" "${{ secrets.WIFI_KEY }}"
-        echo -e 'CONFIG_DEVEL=y\nCONFIG_CCACHE=y\nCONFIG_TESTING_KERNEL=y' >> .config; make defconfig
+        echo -e 'CONFIG_DEVEL=y\nCONFIG_CCACHE=y' >> .config; make defconfig
 
     - name: Cat config
       run: |
