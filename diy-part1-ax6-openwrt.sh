@@ -22,24 +22,43 @@ echo 'src-git kenzo https://github.com/kenzok8/openwrt-packages' >> feeds.conf.d
 #echo 'src-git Boos https://github.com/Boos4721/OpenWrt-Packages' >> feeds.conf.default
 echo 'src-link custom /workdir/openwrt/custom-feed' >> feeds.conf.default
 
-mkdir -p custom-feed/applications
+mkdir custom-feed
+cd custom-feed
 
-for i in "ipv6-helper"; do \
-  svn checkout "https://github.com/coolsnowwolf/lede/trunk/package/lean/$i" "custom-feed/applications/$i"; \
-done
+git init coolsnowwolf_lede
+cd coolsnowwolf_lede
+git remote add origin https://github.com/coolsnowwolf/lede
+git config core.sparsecheckout true
+echo 'package/lean/ipv6-helper' >> .git/info/sparse-checkout
+git pull origin master
+cd ../
 
-for i in "luci-app-vlmcsd"; do \
-  svn checkout "https://github.com/coolsnowwolf/luci/trunk/applications/$i" "custom-feed/applications/$i"; \
-done
-sed -i 's/include ..\/..\/luci.mk/include $(TOPDIR)\/feeds\/luci\/luci.mk/' custom-feed/applications/luci-app-vlmcsd/Makefile
+git init coolsnowwolf_luci
+cd coolsnowwolf_luci
+git remote add origin https://github.com/coolsnowwolf/luci
+git config core.sparsecheckout true
+echo 'applications/luci-app-vlmcsd' >> .git/info/sparse-checkout
+git pull origin master
+sed -i 's/include ..\/..\/luci.mk/include $(TOPDIR)\/feeds\/luci\/luci.mk/' applications/luci-app-vlmcsd/Makefile
+cd ../
 
-for i in "vlmcsd"; do \
-  svn checkout "https://github.com/coolsnowwolf/packages/trunk/net/$i" "custom-feed/applications/$i"; \
-done
+git init coolsnowwolf_packages
+cd coolsnowwolf_packages
+git remote add origin https://github.com/coolsnowwolf/packages
+git config core.sparsecheckout true
+echo 'net/vlmcsd' >> .git/info/sparse-checkout
+git pull origin master
+cd ../
 
-for i in "luci-app-autoreboot"; do \
-  svn checkout "https://github.com/kenzok8/small-package/trunk/$i" "custom-feed/applications/$i"; \
-done
+git init kenzok8_small-package
+cd kenzok8_small-package
+git remote add origin https://github.com/kenzok8/small-package
+git config core.sparsecheckout true
+echo 'luci-app-autoreboot' >> .git/info/sparse-checkout
+git pull origin master
+cd ../
+
+cd ../
 
 mv $GITHUB_WORKSPACE/0001-ipq807x-add-stock-layout-variant-for-redmi-ax6.patch 0001-ipq807x-add-stock-layout-variant-for-redmi-ax6.patch
 git apply 0001-ipq807x-add-stock-layout-variant-for-redmi-ax6.patch
