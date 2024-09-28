@@ -85,6 +85,7 @@ echo "                                                               " >> packag
 
 # fix luci-app-autoreboot depends
 sed -i 's/LUCI_DEPENDS:=+luci/LUCI_DEPENDS:=/' feeds/luci/applications/luci-app-autoreboot/Makefile
+rm -rf feeds/luci/collections/luci
 
 ./scripts/feeds update -a
 ./scripts/feeds install -a
