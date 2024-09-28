@@ -82,3 +82,5 @@ echo "   COMMIT_HASH: $COMMIT_HASH                                   " >> packag
 echo "   DEVICE_NAME: $DEVICE_NAME                                   " >> package/base-files/files/etc/banner
 echo " ------------------------------------------------------------- " >> package/base-files/files/etc/banner
 echo "                                                               " >> package/base-files/files/etc/banner
+
+sed -i 's/LUCI_DEPENDS:=+luci/LUCI_DEPENDS:=/' feeds/luci/applications/luci-app-autoreboot/Makefile
