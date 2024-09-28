@@ -83,4 +83,8 @@ echo "   DEVICE_NAME: $DEVICE_NAME                                   " >> packag
 echo " ------------------------------------------------------------- " >> package/base-files/files/etc/banner
 echo "                                                               " >> package/base-files/files/etc/banner
 
+# fix luci-app-autoreboot depends
 sed -i 's/LUCI_DEPENDS:=+luci/LUCI_DEPENDS:=/' feeds/luci/applications/luci-app-autoreboot/Makefile
+
+./scripts/feeds update -a
+./scripts/feeds install -a
