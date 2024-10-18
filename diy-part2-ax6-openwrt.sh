@@ -43,11 +43,27 @@ sed -i "/^PKG_SOURCE_URL:=/,/^PKG_HASH:=/s/.*//" package/libs/openssl/Makefile
 sed -i "/^PKG_SOURCE:=/cPKG_SOURCE_PROTO:=git\nPKG_SOURCE_URL:=https://github.com/quictls/openssl\nPKG_SOURCE_VERSION:=openssl-\$(PKG_VERSION)+quic\nPKG_MIRROR_HASH:=skip" package/libs/openssl/Makefile
 
 # nginx quic
-#rm -rf feeds/packages/net/nginx
-#rm -rf feeds/packages/net/nginx-util
-#for i in "nginx" "nginx-util"; do \
-#  svn checkout "https://github.com/hnyyghk/OpenWrt_Nginx-QUIC/trunk/net/$i" "feeds/packages/net/$i"; \
-#done
+rm -rf feeds/packages/net/nginx
+rm -rf feeds/packages/net/nginx-util
+cd feeds/packages/net
+
+git init nginx
+cd nginx
+git remote add origin https://github.com/hnyyghk/OpenWrt_Nginx-QUIC
+git config core.sparsecheckout true
+echo 'net/nginx' >> .git/info/sparse-checkout
+git pull origin upstream
+cd ../
+
+git init nginx-util
+cd nginx-util
+git remote add origin https://github.com/hnyyghk/OpenWrt_Nginx-QUIC
+git config core.sparsecheckout true
+echo 'net/nginx-util' >> .git/info/sparse-checkout
+git pull origin upstream
+cd ../
+
+cd ../../../
 
 # add alter inbound api
 #sed -i "/^PKG_SOURCE:=/s/.*//" feeds/packages/net/v2ray-core/Makefile
@@ -401,22 +417,19 @@ EOF
 }
 
 init_custom_config() {
-    uci set dhcp.cfg01411c.cachesize='0'
-    uci commit dhcp
-    /etc/init.d/dnsmasq restart >> /etc/custom.tag 2>&1
-    echo "dnsmasq finish" >> /etc/custom.tag
-
     uci set smartdns.cfg016bb1.enabled='1'
     uci set smartdns.cfg016bb1.server_name='smartdns'
-    uci set smartdns.cfg016bb1.port='6053'
-    uci set smartdns.cfg016bb1.tcp_server='0'
-    uci set smartdns.cfg016bb1.ipv6_server='0'
+    uci set smartdns.cfg016bb1.port='53'
+    uci set smartdns.cfg016bb1.auto_set_dnsmasq='1'
+    uci set smartdns.cfg016bb1.tcp_server='1'
+    uci set smartdns.cfg016bb1.ipv6_server='1'
+    uci set smartdns.cfg016bb1.bind_device='0'
     uci set smartdns.cfg016bb1.dualstack_ip_selection='1'
     uci set smartdns.cfg016bb1.prefetch_domain='1'
     uci set smartdns.cfg016bb1.serve_expired='1'
     uci set smartdns.cfg016bb1.cache_size='16384'
+    uci set smartdns.cfg016bb1.cache_persist='1'
     uci set smartdns.cfg016bb1.resolve_local_hostnames='1'
-    uci set smartdns.cfg016bb1.auto_set_dnsmasq='1'
     uci set smartdns.cfg016bb1.force_aaaa_soa='0'
     uci set smartdns.cfg016bb1.force_https_soa='0'
     uci set smartdns.cfg016bb1.rr_ttl='30'
@@ -510,7 +523,7 @@ EOF
 
     uci set autoreboot.cfg01f8be.enable='1'
     uci set autoreboot.cfg01f8be.week='7'
-    uci set autoreboot.cfg01f8be.hour='3'
+    uci set autoreboot.cfg01f8be.hour='4'
     uci set autoreboot.cfg01f8be.minute='30'
     uci commit autoreboot
     /etc/init.d/autoreboot restart >> /etc/custom.tag 2>&1
@@ -518,9 +531,11 @@ EOF
 
     sleep 30
 
+    # 强制走代理的域名
     echo "cloudflare-dns.com" >> /etc/ssrplus/black.list
     echo "dns.google" >> /etc/ssrplus/black.list
     echo "doh.opendns.com" >> /etc/ssrplus/black.list
+    # 强制走代理的 WAN IP
     uci add_list shadowsocksr.cfg034417.wan_fw_ips='1.1.1.1'
     uci add_list shadowsocksr.cfg034417.wan_fw_ips='1.0.0.1'
     uci add_list shadowsocksr.cfg034417.wan_fw_ips='8.8.8.8'
@@ -528,7 +543,7 @@ EOF
     uci add_list shadowsocksr.cfg034417.wan_fw_ips='208.67.222.222'
     uci add_list shadowsocksr.cfg034417.wan_fw_ips='208.67.220.220'
     uci set shadowsocksr.cfg029e1d.auto_update='1'
-    uci set shadowsocksr.cfg029e1d.auto_update_time='4'
+    uci set shadowsocksr.cfg029e1d.auto_update_time='5'
     uci add_list shadowsocksr.cfg029e1d.subscribe_url="\${SSR_SUBSCRIBE_URL}"
     uci set shadowsocksr.cfg029e1d.save_words="\${SSR_SAVE_WORDS}"
     uci set shadowsocksr.cfg029e1d.switch='1'
