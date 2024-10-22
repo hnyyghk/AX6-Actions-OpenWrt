@@ -45,6 +45,8 @@ sed -i "/^PKG_SOURCE:=/cPKG_SOURCE_PROTO:=git\nPKG_SOURCE_URL:=https://github.co
 # nginx quic
 rm -rf feeds/packages/net/nginx
 rm -rf feeds/packages/net/nginx-util
+./scripts/feeds update -a
+./scripts/feeds install -a
 
 # add alter inbound api
 #sed -i "/^PKG_SOURCE:=/s/.*//" feeds/packages/net/v2ray-core/Makefile
