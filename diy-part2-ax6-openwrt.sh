@@ -45,25 +45,7 @@ sed -i "/^PKG_SOURCE:=/cPKG_SOURCE_PROTO:=git\nPKG_SOURCE_URL:=https://github.co
 # nginx quic
 rm -rf feeds/packages/net/nginx
 rm -rf feeds/packages/net/nginx-util
-cd feeds/packages/net
-
-git init nginx
-cd nginx
-git remote add origin https://github.com/hnyyghk/OpenWrt_Nginx-QUIC
-git config core.sparsecheckout true
-echo 'net/nginx' >> .git/info/sparse-checkout
-git pull origin upstream
-cd ../
-
-git init nginx-util
-cd nginx-util
-git remote add origin https://github.com/hnyyghk/OpenWrt_Nginx-QUIC
-git config core.sparsecheckout true
-echo 'net/nginx-util' >> .git/info/sparse-checkout
-git pull origin upstream
-cd ../
-
-cd ../../../
+git clone -b upstream https://github.com/hnyyghk/OpenWrt_Nginx-QUIC feeds/packages/tmp
 
 # add alter inbound api
 #sed -i "/^PKG_SOURCE:=/s/.*//" feeds/packages/net/v2ray-core/Makefile
