@@ -53,9 +53,6 @@ echo 'net/vlmcsd' >> .git/info/sparse-checkout
 git pull origin master
 cd ../
 
-# nginx quic
-git clone -b upstream https://github.com/hnyyghk/OpenWrt_Nginx-QUIC
-
 cd ../
 
 mv $GITHUB_WORKSPACE/0001-ipq807x-add-stock-layout-variant-for-redmi-ax6.patch 0001-ipq807x-add-stock-layout-variant-for-redmi-ax6.patch
