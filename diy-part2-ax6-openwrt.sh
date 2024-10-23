@@ -45,7 +45,7 @@ sed -i "/^PKG_SOURCE:=/cPKG_SOURCE_PROTO:=git\nPKG_SOURCE_URL:=https://github.co
 # nginx quic
 rm -rf feeds/packages/net/nginx
 rm -rf feeds/packages/net/nginx-util
-git clone -b upstream https://github.com/hnyyghk/OpenWrt_Nginx-QUIC
+git clone -b dynamic https://github.com/hnyyghk/OpenWrt_Nginx-QUIC
 mv OpenWrt_Nginx-QUIC/net/* feeds/packages/net
 rm -rf OpenWrt_Nginx-QUIC
 
