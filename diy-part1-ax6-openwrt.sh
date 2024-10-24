@@ -22,6 +22,8 @@ echo 'src-git kenzo https://github.com/kenzok8/openwrt-packages' >> feeds.conf.d
 #echo 'src-git Boos https://github.com/Boos4721/OpenWrt-Packages' >> feeds.conf.default
 echo 'src-link custom /workdir/openwrt/custom-feed' >> feeds.conf.default
 
+sed -i 's/git.openwrt.org\/project\/luci.git/github.com\/hnyyghk\/luci;fix_luci_nginx/' feeds.conf.default
+
 mkdir custom-feed
 cd custom-feed
 
