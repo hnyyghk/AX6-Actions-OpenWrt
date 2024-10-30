@@ -38,9 +38,11 @@ if [ -z "$WIFI_KEY" ]; then
     WIFI_KEY='Unknown'
 fi
 
+#/etc/ssrplus$ openssl version
+#OpenSSL 3.0.15+quic 3 Sep 2024 (Library: OpenSSL 3.0.15+quic 3 Sep 2024)
 # fix certain modules require OpenSSL QUIC support, replace built-in OpenSSL to QuicTLS
-sed -i "/^PKG_SOURCE_URL:=/,/^PKG_HASH:=/s/.*//" package/libs/openssl/Makefile
-sed -i "/^PKG_SOURCE:=/cPKG_SOURCE_PROTO:=git\nPKG_SOURCE_URL:=https://github.com/quictls/openssl\nPKG_SOURCE_VERSION:=openssl-\$(PKG_VERSION)+quic\nPKG_MIRROR_HASH:=skip" package/libs/openssl/Makefile
+#sed -i "/^PKG_SOURCE_URL:=/,/^PKG_HASH:=/s/.*//" package/libs/openssl/Makefile
+#sed -i "/^PKG_SOURCE:=/cPKG_SOURCE_PROTO:=git\nPKG_SOURCE_URL:=https://github.com/quictls/openssl\nPKG_SOURCE_VERSION:=openssl-\$(PKG_VERSION)+quic\nPKG_MIRROR_HASH:=skip" package/libs/openssl/Makefile
 
 # nginx quic
 rm -rf feeds/packages/net/nginx
