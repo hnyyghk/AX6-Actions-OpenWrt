@@ -14,7 +14,7 @@ diff --git a/package/boot/uboot-envtools/files/qualcommax_ipq807x b/package/boot
 --- a/package/boot/uboot-envtools/files/qualcommax_ipq807x	(revision 23ac1ad9515588321970985859b2ee0cc8243f91)
 +++ b/package/boot/uboot-envtools/files/qualcommax_ipq807x	(revision 7a6bcb958d2412ae5452b1da480af6bed5a949cc)
 @@ -45,7 +45,9 @@
- 		ubootenv_add_mtd "u_env" "0x0" "0x40000" "0x40000"
+ 	ubootenv_add_mtd "u_env" "0x0" "0x40000" "0x40000"
  	;;
  redmi,ax6|\
 +redmi,ax6-stock|\
