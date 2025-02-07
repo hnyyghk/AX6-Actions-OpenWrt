@@ -14,15 +14,15 @@ diff --git a/package/boot/uboot-envtools/files/qualcommax_ipq807x b/package/boot
 --- a/package/boot/uboot-envtools/files/qualcommax_ipq807x	(revision 23ac1ad9515588321970985859b2ee0cc8243f91)
 +++ b/package/boot/uboot-envtools/files/qualcommax_ipq807x	(revision 7a6bcb958d2412ae5452b1da480af6bed5a949cc)
 @@ -45,7 +45,9 @@
- 		ubootenv_add_uci_config "/dev/mtd$idx" "0x0" "0x40000" "0x20000"
+ 		ubootenv_add_mtd "u_env" "0x0" "0x40000" "0x40000"
  	;;
  redmi,ax6|\
 +redmi,ax6-stock|\
  xiaomi,ax3600|\
 +xiaomi,ax3600-stock|\
  xiaomi,ax9000)
- 	idx="$(find_mtd_index 0:appsblenv)"
- 	[ -n "$idx" ] && \
+ 	ubootenv_add_mtd "0:appsblenv" "0x0" "0x10000" "0x20000"
+ 	ubootenv_add_sys_mtd "bdata" "0x0" "0x10000" "0x20000"
 Index: target/linux/qualcommax/files/arch/arm64/boot/dts/qcom/ipq8071-ax3600-stock.dts
 IDEA additional info:
 Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
@@ -228,7 +228,7 @@ diff --git a/target/linux/qualcommax/ipq807x/base-files/etc/board.d/02_network b
 --- a/target/linux/qualcommax/ipq807x/base-files/etc/board.d/02_network	(revision 23ac1ad9515588321970985859b2ee0cc8243f91)
 +++ b/target/linux/qualcommax/ipq807x/base-files/etc/board.d/02_network	(revision 7a6bcb958d2412ae5452b1da480af6bed5a949cc)
 @@ -31,8 +31,10 @@
- 	linksys,mx4200v2|\
+ 	linksys,mx4300|\
  	prpl,haze|\
  	redmi,ax6|\
 +	redmi,ax6-stock|\
