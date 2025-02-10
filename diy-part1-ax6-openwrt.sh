@@ -40,8 +40,13 @@ cd coolsnowwolf_luci
 git remote add origin https://github.com/coolsnowwolf/luci
 git config core.sparsecheckout true
 echo 'applications/luci-app-vlmcsd' >> .git/info/sparse-checkout
+echo 'applications/luci-app-autoreboot' >> .git/info/sparse-checkout
 git pull origin master
 sed -i 's/include ..\/..\/luci.mk/include $(TOPDIR)\/feeds\/luci\/luci.mk/' applications/luci-app-vlmcsd/Makefile
+sed -i 's/include ..\/..\/luci.mk/include $(TOPDIR)\/feeds\/luci\/luci.mk/' applications/luci-app-autoreboot/Makefile
+sed -i '/^LUCI_DEPENDS:=+luci$/d' applications/luci-app-autoreboot/Makefile
+sed -i '/^PKG_VERSION:=1.0$/d' applications/luci-app-autoreboot/Makefile
+sed -i '/^PKG_RELEASE:=8$/d' applications/luci-app-autoreboot/Makefile
 cd ../
 
 git init coolsnowwolf_packages
@@ -50,15 +55,6 @@ git remote add origin https://github.com/coolsnowwolf/packages
 git config core.sparsecheckout true
 echo 'net/vlmcsd' >> .git/info/sparse-checkout
 git pull origin master
-cd ../
-
-git init immortalwrt_luci
-cd immortalwrt_luci
-git remote add origin https://github.com/immortalwrt/luci
-git config core.sparsecheckout true
-echo 'applications/luci-app-autoreboot' >> .git/info/sparse-checkout
-git pull origin master
-sed -i 's/include ..\/..\/luci.mk/include $(TOPDIR)\/feeds\/luci\/luci.mk/' applications/luci-app-autoreboot/Makefile
 cd ../
 
 cd ../
