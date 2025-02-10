@@ -39,10 +39,11 @@ if [ -z "$WIFI_KEY" ]; then
 fi
 
 #/etc/ssrplus$ openssl version
+#OpenSSL 3.0.15 3 Sep 2024 (Library: OpenSSL 3.0.15 3 Sep 2024)
 #OpenSSL 3.0.15+quic 3 Sep 2024 (Library: OpenSSL 3.0.15+quic 3 Sep 2024)
 # fix certain modules require OpenSSL QUIC support, replace built-in OpenSSL to QuicTLS
-#sed -i "/^PKG_SOURCE_URL:=/,/^PKG_HASH:=/s/.*//" package/libs/openssl/Makefile
-#sed -i "/^PKG_SOURCE:=/cPKG_SOURCE_PROTO:=git\nPKG_SOURCE_URL:=https://github.com/quictls/openssl\nPKG_SOURCE_VERSION:=openssl-\$(PKG_VERSION)+quic\nPKG_MIRROR_HASH:=skip" package/libs/openssl/Makefile
+sed -i "/^PKG_SOURCE_URL:=/,/^PKG_HASH:=/s/.*//" package/libs/openssl/Makefile
+sed -i "/^PKG_SOURCE:=/cPKG_SOURCE_PROTO:=git\nPKG_SOURCE_URL:=https://github.com/quictls/openssl\nPKG_SOURCE_VERSION:=openssl-\$(PKG_VERSION)+quic\nPKG_MIRROR_HASH:=skip" package/libs/openssl/Makefile
 
 # nginx quic
 rm -rf feeds/packages/net/nginx
@@ -195,15 +196,16 @@ sed -i 's/192.168.1.1/192.168.31.1/' package/base-files/files/bin/config_generat
 # net.ipv4.neigh.default.gc_thresh2 = 512
 # net.ipv4.neigh.default.gc_thresh3 = 1024
 # net.netfilter.nf_conntrack_max = 26112
-sed -i '/customized in this file/a fs.file-max=102400\nnet.ipv4.neigh.default.gc_thresh1=512\nnet.ipv4.neigh.default.gc_thresh2=2048\nnet.ipv4.neigh.default.gc_thresh3=4096\nnet.netfilter.nf_conntrack_max=65535' package/base-files/files/etc/sysctl.conf
+sed -i '/will not survive a reimage/a fs.file-max=102400\nnet.ipv4.neigh.default.gc_thresh1=512\nnet.ipv4.neigh.default.gc_thresh2=2048\nnet.ipv4.neigh.default.gc_thresh3=4096\nnet.netfilter.nf_conntrack_max=65535' package/base-files/files/etc/sysctl.conf
 
 # 设置密码为password
 sed -i 's/root:::0:99999:7:::/root:$1$V4UetPzk$CYXluq4wUazHjmCDBCqXF.:0:0:99999:7:::/' package/base-files/files/etc/shadow
 
 # 修改无线国家代码、开关、命名、加密方式及密码
-sed -i "s/\${s}.disabled='1'/\${s}.country=US\nset \${s}.disabled='0'/" package/network/config/wifi-scripts/files/lib/wifi/mac80211.uc
-sed -i "s/\${si}.ssid='OpenWrt'/wireless.default_radio0.ssid='${WIFI_SSID}'\nset wireless.default_radio1.ssid='${WIFI_SSID}_2.4G'/" package/network/config/wifi-scripts/files/lib/wifi/mac80211.uc
-sed -i "s/\${si}.encryption='none'/\${si}.encryption='psk-mixed'\nset \${si}.key='${WIFI_KEY}'/" package/network/config/wifi-scripts/files/lib/wifi/mac80211.uc
+sed -i "s/\${s}.country='\${country || ''}'/\${s}.country='US'/" package/network/config/wifi-scripts/files/lib/wifi/mac80211.uc
+sed -i "s/\${s}.disabled='\${defaults ? 0 : 1}'/\${s}.disabled='0'/" package/network/config/wifi-scripts/files/lib/wifi/mac80211.uc
+sed -i "s/\${si}.ssid='\${defaults?.ssid || \"OpenWrt\"}'/wireless.default_radio0.ssid='${WIFI_SSID}'\nset wireless.default_radio1.ssid='${WIFI_SSID}_2.4G'/" package/network/config/wifi-scripts/files/lib/wifi/mac80211.uc
+sed -i "s/\${si}.encryption='\${defaults?.encryption || \"none\"}'/\${si}.encryption='psk-mixed'\nset \${si}.key='${WIFI_KEY}'/" package/network/config/wifi-scripts/files/lib/wifi/mac80211.uc
 
 # hijack dns queries to router(firewall)
 sed -i '/REDIRECT --to-ports 53/d' package/network/config/firewall/files/firewall.user
@@ -482,8 +484,19 @@ EOF
     #uci set network.modem.peerdns='0'
     #uci set network.modem.delegate='0'
     #uci commit network
-    #/etc/init.d/network restart >> /etc/custom.tag 2>&1
-    #echo "network finish" >> /etc/custom.tag
+    uci del dhcp.lan.ra_slaac
+    uci del dhcp.lan.ra_flags
+    uci del dhcp.lan.master
+    uci set dhcp.lan.ra='relay'
+    uci set dhcp.lan.dhcpv6='relay'
+    uci set dhcp.lan.ndp='relay'
+    uci set dhcp.wan.master='1'
+    uci set dhcp.wan.ra='relay'
+    uci set dhcp.wan.dhcpv6='relay'
+    uci set dhcp.wan.ndp='relay'
+    uci commit dhcp
+    /etc/init.d/network restart >> /etc/custom.tag 2>&1
+    echo "network finish" >> /etc/custom.tag
 
     #uci add_list firewall.cfg03dc81.network='modem'
     #uci commit firewall
