@@ -45,8 +45,6 @@ git pull origin master
 sed -i 's/include ..\/..\/luci.mk/include $(TOPDIR)\/feeds\/luci\/luci.mk/' applications/luci-app-vlmcsd/Makefile
 sed -i 's/include ..\/..\/luci.mk/include $(TOPDIR)\/feeds\/luci\/luci.mk/' applications/luci-app-autoreboot/Makefile
 sed -i '/^LUCI_DEPENDS:=+luci$/d' applications/luci-app-autoreboot/Makefile
-sed -i '/^PKG_VERSION:=1.0$/d' applications/luci-app-autoreboot/Makefile
-sed -i '/^PKG_RELEASE:=8$/d' applications/luci-app-autoreboot/Makefile
 cd ../
 
 git init coolsnowwolf_packages
