@@ -20,9 +20,11 @@ echo 'src-git helloworld https://github.com/fw876/helloworld' >> feeds.conf.defa
 echo 'src-git kenzo https://github.com/kenzok8/openwrt-packages' >> feeds.conf.default
 #echo 'src-git lienol https://github.com/Lienol/openwrt-package' >> feeds.conf.default
 #echo 'src-git Boos https://github.com/Boos4721/OpenWrt-Packages' >> feeds.conf.default
-echo 'src-link custom /workdir/openwrt/custom-feed' >> feeds.conf.default
-
+echo "src-link custom $GITHUB_WORKSPACE/openwrt/custom-feed" >> feeds.conf.default
+echo 'src-link custom $GITHUB_WORKSPACE/openwrt/custom-feed'
+echo "src-link custom $GITHUB_WORKSPACE/openwrt/custom-feed"
 sed -i 's/git.openwrt.org\/project\/luci.git/github.com\/hnyyghk\/luci;fix_luci_nginx/' feeds.conf.default
+cat feeds.conf.default
 
 mkdir custom-feed
 cd custom-feed
