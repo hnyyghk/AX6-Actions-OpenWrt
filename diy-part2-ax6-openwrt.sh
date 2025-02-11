@@ -205,7 +205,8 @@ sed -i 's/root:::0:99999:7:::/root:$1$V4UetPzk$CYXluq4wUazHjmCDBCqXF.:0:0:99999:
 sed -i "s/\${s}.country='\${country || ''}'/\${s}.country='US'/" package/network/config/wifi-scripts/files/lib/wifi/mac80211.uc
 sed -i "s/\${s}.disabled='\${defaults ? 0 : 1}'/\${s}.disabled='0'/" package/network/config/wifi-scripts/files/lib/wifi/mac80211.uc
 sed -i "s/\${si}.ssid='\${defaults?.ssid || \"OpenWrt\"}'/wireless.default_radio0.ssid='${WIFI_SSID}'\nset wireless.default_radio1.ssid='${WIFI_SSID}_2.4G'/" package/network/config/wifi-scripts/files/lib/wifi/mac80211.uc
-sed -i "s/\${si}.encryption='\${defaults?.encryption || \"none\"}'/\${si}.encryption='psk-mixed'\nset \${si}.key='${WIFI_KEY}'/" package/network/config/wifi-scripts/files/lib/wifi/mac80211.uc
+sed -i "s/\${si}.encryption='\${defaults?.encryption || \"none\"}'/\${si}.encryption='psk-mixed'/" package/network/config/wifi-scripts/files/lib/wifi/mac80211.uc
+sed -i "s/\${si}.key='\${defaults?.key || \"\"}'/\${si}.key='${WIFI_KEY}'/" package/network/config/wifi-scripts/files/lib/wifi/mac80211.uc
 
 # hijack dns queries to router(firewall)
 sed -i '/REDIRECT --to-ports 53/d' package/network/config/firewall/files/firewall.user
