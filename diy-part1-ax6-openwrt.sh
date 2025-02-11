@@ -67,7 +67,7 @@ echo $GITHUB_WORKSPACE
 cd /home/runner/work/AX6-Actions-OpenWrt/AX6-Actions-OpenWrt/openwrt
 pwd
 git log --pretty=tformat:"%h" -n1 tools toolchain
-find tools toolchain -type f
-find tools toolchain -type f | xargs md5sum
-find tools toolchain -type f | xargs md5sum | md5sum
-find tools toolchain -type f | xargs md5sum | md5sum | awk '{ print $1 }'
+find tools toolchain -type f | sort
+find tools toolchain -type f | sort | xargs md5sum
+find tools toolchain -type f | sort | xargs md5sum | md5sum
+find tools toolchain -type f | sort | xargs md5sum | md5sum | awk '{ print $1 }'
