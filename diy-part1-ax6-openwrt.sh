@@ -61,3 +61,7 @@ mv $GITHUB_WORKSPACE/0001-ipq807x-add-stock-layout-variant-for-redmi-ax6.patch 0
 git apply 0001-ipq807x-add-stock-layout-variant-for-redmi-ax6.patch
 
 ls $GITHUB_WORKSPACE
+ls $GITHUB_WORKSPACE/openwrt
+echo $GITHUB_WORKSPACE
+cd /home/runner/work/AX6-Actions-OpenWrt/AX6-Actions-OpenWrt/openwrt
+find tools toolchain -type f | xargs md5sum | md5sum | awk '{ print $1 }'
