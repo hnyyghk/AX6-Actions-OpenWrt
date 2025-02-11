@@ -59,3 +59,5 @@ cd ../
 
 mv $GITHUB_WORKSPACE/0001-ipq807x-add-stock-layout-variant-for-redmi-ax6.patch 0001-ipq807x-add-stock-layout-variant-for-redmi-ax6.patch
 git apply 0001-ipq807x-add-stock-layout-variant-for-redmi-ax6.patch
+
+ls $GITHUB_WORKSPACE
